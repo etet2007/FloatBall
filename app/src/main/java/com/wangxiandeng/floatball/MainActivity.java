@@ -8,7 +8,16 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+/*
 
+判断版本，使用Build.VERSION.SDK_INT
+
+权限设置 ACTION_MANAGE_OVERLAY_PERMISSION
+        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+辅助功能
+ */
 public class MainActivity extends Activity {
 
     private Button mBtnStart;
@@ -19,7 +28,12 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
+        //判断版本，使用Build.VERSION.SDK_INT
+        //Build: Information about the current build, extracted from system properties.
+        //Build.VERSION: The user-visible SDK version of the framework; its possible values are defined in Build.VERSION_CODES.
+        //23 Marshmallow
         if (Build.VERSION.SDK_INT >= 23) {
+            //Setting :The Settings provider contains global system-level device preferences.
             if (!Settings.canDrawOverlays(this)) {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -35,6 +49,7 @@ public class MainActivity extends Activity {
         mBtnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                设置辅助功能
                 checkAccessibility();
                 Intent intent = new Intent(MainActivity.this, FloatBallService.class);
                 Bundle data = new Bundle();
@@ -56,7 +71,7 @@ public class MainActivity extends Activity {
     }
 
     private void checkAccessibility() {
-        // 判断辅助功能是否开启
+        // 判断辅助功能是否开启，看不懂
         if (!AccessibilityUtil.isAccessibilitySettingsOn(this)) {
             // 引导至辅助功能设置页面
             startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));

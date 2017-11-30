@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.view.accessibility.AccessibilityEvent;
 
 /**
+ * Accessibility services should only be used to assist users with disabilities in using Android devices and apps.
+ *  Such a service can optionally request the capability for querying the content of the active window.
+ *  Development of an accessibility service requires extending this class and implementing its abstract methods.
+
  * Created by wangxiandeng on 2016/11/25.
  */
 

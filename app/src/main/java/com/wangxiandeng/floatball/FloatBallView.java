@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import java.lang.reflect.Field;
 
 /**
+ * LinearLayout
  * Created by wangxiandeng on 2016/11/25.
  */
 
@@ -32,7 +33,6 @@ public class FloatBallView extends LinearLayout {
     private float mLastDownY;
 
     private boolean mIsLongTouch;
-
     private boolean mIsTouching;
 
     private float mTouchSlop;
@@ -61,6 +61,7 @@ public class FloatBallView extends LinearLayout {
 
     private int mOffsetToParent;
     private int mOffsetToParentY;
+    //管理震动
     private Vibrator mVibrator;
     private long[] mPattern = {0, 100};
 

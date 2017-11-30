@@ -7,10 +7,9 @@ import android.provider.Settings;
 /**
  * Created by wangxiandeng on 2016/11/25.
  */
-
 public class AccessibilityUtil {
     /**
-     * µ¥»÷·µ»Ø¹¦ÄÜ
+     * å•å‡»è¿”å›åŠŸèƒ½
      * @param service
      */
     public static void doBack(AccessibilityService service) {
@@ -18,7 +17,7 @@ public class AccessibilityUtil {
     }
 
     /**
-     * ÏÂÀ­´ò¿ªÍ¨ÖªÀ¸
+     * ä¸‹æ‹‰æ‰“å¼€é€šçŸ¥æ 
      * @param service
      */
     public static void doPullDown(AccessibilityService service) {
@@ -26,7 +25,7 @@ public class AccessibilityUtil {
     }
 
     /**
-     * ÉÏÀ­·µ»Ø×ÀÃæ
+     * ä¸Šæ‹‰è¿”å›æ¡Œé¢
      * @param service
      */
     public static void doPullUp(AccessibilityService service) {
@@ -34,7 +33,7 @@ public class AccessibilityUtil {
     }
 
     /**
-     * ×óÓÒ»¬¶¯´ò¿ª¶àÈÎÎñ
+     * å·¦å³æ»‘åŠ¨æ‰“å¼€å¤šä»»åŠ¡
      * @param service
      */
     public static void doLeftOrRight(AccessibilityService service) {
@@ -43,14 +42,20 @@ public class AccessibilityUtil {
 
     public static boolean isAccessibilitySettingsOn(Context context) {
         int accessibilityEnabled = 0;
+
+        //If accessibility is enabled
         try {
+            //Settings.Secure: Secure system settings, containing system preferences that applications
+            // can read but are not allowed to write.
+            //getInt: Convenience function for retrieving a single secure settings value as an integer.
             accessibilityEnabled = Settings.Secure.getInt(context.getContentResolver(),
-                    android.provider.Settings.Secure.ACCESSIBILITY_ENABLED);
+                    Settings.Secure.ACCESSIBILITY_ENABLED);
         } catch (Settings.SettingNotFoundException e) {
             e.printStackTrace();
         }
 
         if (accessibilityEnabled == 1) {
+            //List of the enabled accessibility providers.   accessibilityé‡Œé¢æœ‰ä¸ªServicesåˆ—è¡¨ã€‚
             String services = Settings.Secure.getString(context.getContentResolver(),
                     Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
             if (services != null) {
