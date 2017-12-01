@@ -34,6 +34,11 @@ public class MainActivity extends Activity {
         //23 Marshmallow
         if (Build.VERSION.SDK_INT >= 23) {
             //Setting :The Settings provider contains global system-level device preferences.
+            //Checks if the specified context can draw on top of other apps. As of API level 23,
+            // an app cannot draw on top of other apps unless it declares the SYSTEM_ALERT_WINDOW permission
+            // in its manifest, and the user specifically grants the app this capability.
+            // To prompt the user to grant this approval, the app must send an intent with the action
+            // ACTION_MANAGE_OVERLAY_PERMISSION, which causes the system to display a permission management screen.
             if (!Settings.canDrawOverlays(this)) {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -3,6 +3,7 @@ package com.wangxiandeng.floatball;
 import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
 import android.provider.Settings;
+import android.util.Log;
 
 /**
  * Created by wangxiandeng on 2016/11/25.
@@ -43,7 +44,7 @@ public class AccessibilityUtil {
     public static boolean isAccessibilitySettingsOn(Context context) {
         int accessibilityEnabled = 0;
 
-        //If accessibility is enabled
+        //If accessibility is enabled，使用Content Provider读取Setting中Secure的配置。
         try {
             //Settings.Secure: Secure system settings, containing system preferences that applications
             // can read but are not allowed to write.
@@ -58,6 +59,7 @@ public class AccessibilityUtil {
             //List of the enabled accessibility providers.   accessibility里面有个Services列表。
             String services = Settings.Secure.getString(context.getContentResolver(),
                     Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+            Log.d("lqt", services);
             if (services != null) {
                 return services.toLowerCase().contains(context.getPackageName().toLowerCase());
             }
