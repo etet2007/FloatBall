@@ -7,9 +7,8 @@ import android.view.accessibility.AccessibilityEvent;
 
 /**
  * Accessibility services should only be used to assist users with disabilities in using Android devices and apps.
- *  Such a service can optionally request the capability for querying the content of the active window.
- *  Development of an accessibility service requires extending this class and implementing its abstract methods.
-
+ *  Such a service can optionally随意地 request the capability能力 for querying the content of the active window.
+ *
  * Created by wangxiandeng on 2016/11/25.
  */
 
@@ -27,6 +26,9 @@ public class FloatBallService extends AccessibilityService {
 
     }
 
+//    Called by the system every time a client explicitly starts the service by calling startService(Intent),
+// providing the arguments it supplied and a unique integer token representing the start request.
+// Do not call this method directly.
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Bundle data = intent.getExtras();

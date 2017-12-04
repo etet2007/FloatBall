@@ -9,7 +9,7 @@ import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 
 /**
- * 管理BallView的类
+ * 管理WindowManager BallView的类
  * Created by wangxiandeng on 2016/11/25.
  */
 

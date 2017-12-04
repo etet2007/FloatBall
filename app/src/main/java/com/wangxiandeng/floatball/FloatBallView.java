@@ -2,6 +2,7 @@ package com.wangxiandeng.floatball;
 
 
 import android.accessibilityservice.AccessibilityService;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Vibrator;
 import android.util.TypedValue;
@@ -15,7 +16,8 @@ import android.widget.LinearLayout;
 import java.lang.reflect.Field;
 
 /**
- * LinearLayout
+ * 是一个LinearLayout，里面用三个ImageView
+ *
  * Created by wangxiandeng on 2016/11/25.
  */
 
@@ -74,12 +76,14 @@ public class FloatBallView extends LinearLayout {
         initView();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initView() {
+        //根据Layout文件填充
         inflate(getContext(), R.layout.layout_ball, this);
         mImgBall = (ImageView) findViewById(R.id.img_ball);
         mImgBigBall = (ImageView) findViewById(R.id.img_big_ball);
         mImgBg = (ImageView) findViewById(R.id.img_bg);
-
+        //TouchSlop是处理触摸事件中的一个常量，被系统认为滑动和点击事件的临界点。
         mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
         mCurrentMode = MODE_NONE;
 
@@ -87,6 +91,7 @@ public class FloatBallView extends LinearLayout {
         mOffsetToParent = dip2px(25);
         mOffsetToParentY = mStatusBarHeight + mOffsetToParent;
 
+        //Causes the Runnable to be added to the message queue. The runnable will be run on the user interface thread.
         mImgBigBall.post(new Runnable() {
             @Override
             public void run() {
@@ -99,6 +104,7 @@ public class FloatBallView extends LinearLayout {
             @Override
             public boolean onTouch(View v, final MotionEvent event) {
                 switch (event.getAction()) {
+
                     case MotionEvent.ACTION_DOWN:
                         mIsTouching = true;
                         mImgBall.setVisibility(INVISIBLE);
@@ -116,6 +122,7 @@ public class FloatBallView extends LinearLayout {
                             }
                         }, LONG_CLICK_LIMIT);
                         break;
+
                     case MotionEvent.ACTION_MOVE:
                         if (!mIsLongTouch && isTouchSlop(event)) {
                             return true;

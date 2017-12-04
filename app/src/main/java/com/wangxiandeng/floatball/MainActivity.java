@@ -17,7 +17,8 @@ import android.widget.Toast;
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
 辅助功能
- */
+
+*/
 public class MainActivity extends Activity {
 
     private Button mBtnStart;
