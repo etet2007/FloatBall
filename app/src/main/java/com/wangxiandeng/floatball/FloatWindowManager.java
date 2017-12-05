@@ -23,7 +23,6 @@ public class FloatWindowManager {
     public static void addBallView(Context context) {
         if (mBallView == null) {
 //            screenWidth screenHeight
-            //WindowManager: The interface that apps use to talk to the window manager.
             WindowManager windowManager = getWindowManager(context);
             Point size = new Point();
             windowManager.getDefaultDisplay().getSize(size);

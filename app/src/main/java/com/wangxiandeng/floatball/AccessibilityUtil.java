@@ -5,6 +5,8 @@ import android.content.Context;
 import android.provider.Settings;
 import android.util.Log;
 
+import static com.wangxiandeng.floatball.MyFloatBallView.TAG;
+
 /**
  * Created by wangxiandeng on 2016/11/25.
  */
@@ -14,7 +16,8 @@ public class AccessibilityUtil {
      * @param service
      */
     public static void doBack(AccessibilityService service) {
-        service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+        boolean success=service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+        Log.d(TAG, "doBack: "+success);
     }
 
     /**
