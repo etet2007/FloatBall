@@ -15,7 +15,7 @@ import android.view.WindowManager.LayoutParams;
 
 public class FloatWindowManager {
     //View
-    private static FloatBallView mBallView;
+    private static MyFloatBallView mBallView;
     //WindowManager
     private static WindowManager mWindowManager;
 
@@ -30,7 +30,8 @@ public class FloatWindowManager {
             int screenWidth = size.x;
             int screenHeight = size.y;
             //初始化FloatBallView
-            mBallView = new FloatBallView(context);
+            mBallView = new MyFloatBallView(context);
+
             LayoutParams params = new LayoutParams();
             params.x = screenWidth / 2;
             params.y = screenHeight / 2;
