@@ -150,7 +150,8 @@ public class MyFloatBallView extends View {
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            Log.d(TAG, "onScroll: ");
+            Log.d(TAG, "onScroll: distanceX:"+distanceX+"distanceY"+distanceY);
+
             return false;
         }
 
