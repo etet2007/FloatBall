@@ -97,10 +97,10 @@ public class MyFloatBallView extends View {
         //生成动画
         Keyframe kf0 = Keyframe.ofFloat(0f, ballRadius);
         Keyframe kf1 = Keyframe.ofFloat(.7f, ballRadius+7);
-        Keyframe kf2 = Keyframe.ofFloat(1f, ballRadius+9);
+        Keyframe kf2 = Keyframe.ofFloat(1f, ballRadius+8);
         PropertyValuesHolder onTouch = PropertyValuesHolder.ofKeyframe("ballRadius", kf0,kf1,kf2);
         onTouchAnimat = ObjectAnimator.ofPropertyValuesHolder(this, onTouch);
-        onTouchAnimat.setDuration(500);
+        onTouchAnimat.setDuration(300);
         onTouchAnimat.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -108,11 +108,13 @@ public class MyFloatBallView extends View {
             }
         });
 
-        Keyframe kf3 = Keyframe.ofFloat(0f, ballRadius+9);
-        Keyframe kf4 = Keyframe.ofFloat(1f, ballRadius);
-        PropertyValuesHolder unTouch = PropertyValuesHolder.ofKeyframe("ballRadius", kf3,kf4);
+
+        Keyframe kf3 = Keyframe.ofFloat(0f, ballRadius+8);
+        Keyframe kf4 = Keyframe.ofFloat(0.3f, ballRadius+8);
+        Keyframe kf5 = Keyframe.ofFloat(1f, ballRadius);
+        PropertyValuesHolder unTouch = PropertyValuesHolder.ofKeyframe("ballRadius", kf3,kf4,kf5);
         unTouchAnimat = ObjectAnimator.ofPropertyValuesHolder(this, unTouch);
-        unTouchAnimat.setDuration(200);
+        unTouchAnimat.setDuration(400);
         unTouchAnimat.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -148,6 +150,9 @@ public class MyFloatBallView extends View {
         this.mDetector.onTouchEvent(event);
 
         switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                Log.d(TAG, "onTouchEvent: Down");
+                onTouchAnimat.start();
             case MotionEvent.ACTION_MOVE:
                 //移动模式中
                 if (isLongPress){
@@ -158,6 +163,8 @@ public class MyFloatBallView extends View {
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
+                Log.d(TAG, "onTouchEvent: up");
+                unTouchAnimat.start();
                 if(isScrolling){
                     doGesture();
                     currentGesture=GESTURE.NONE;
@@ -205,9 +212,8 @@ public class MyFloatBallView extends View {
         //单击
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
-            Log.d(TAG, "onSingleTapUp: ");
+//            Log.d(TAG, "onSingleTapUp: ");
             AccessibilityUtil.doBack(mService);
-            onTouchAnimat.start();
             return false;
         }
 
@@ -260,8 +266,6 @@ public class MyFloatBallView extends View {
     }
 //应该使用动画，要用变量记下位置
     private void moveFloatBall() {
-        ballRadius=30;
-
         switch (currentGesture){
             case UP:
                 ballCenterX=50;
@@ -282,7 +286,6 @@ public class MyFloatBallView extends View {
             case NONE:
                 ballCenterX=50;
                 ballCenterY=50;
-                ballRadius=25;
                 break;
         }
         invalidate();
