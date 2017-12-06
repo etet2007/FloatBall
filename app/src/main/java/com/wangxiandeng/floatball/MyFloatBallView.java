@@ -15,6 +15,7 @@ import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
 import java.lang.reflect.Field;
@@ -25,9 +26,11 @@ import java.lang.reflect.Field;
 
 public class MyFloatBallView extends View {
     public static final String TAG="lqt";
-    private Paint backgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private Paint ballPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private float backgroundRadius=40;
+    private Paint mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private Paint mBallPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+    private float mBackgroundRadius;
+    private float ballRadius;
 
     private boolean isLongPress=false;
     private int mOffsetToParent;
@@ -35,8 +38,8 @@ public class MyFloatBallView extends View {
     private WindowManager.LayoutParams mLayoutParams;
     private int mStatusBarHeight;
 
+    private int mTouchSlop;
 
-    private float ballRadius=25;
 
     private GestureDetectorCompat mDetector;
     private AccessibilityService mService;
@@ -58,19 +61,20 @@ public class MyFloatBallView extends View {
     }
 
 
-    public MyFloatBallView(Context context) {
+    public MyFloatBallView(Context context,float backgroundRadius) {
         super(context);
         mService = (AccessibilityService) context;
         mWindowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         mDetector=new GestureDetectorCompat(context,new MyGestureListener());
 
+        mBackgroundRadius =backgroundRadius;
+        ballRadius=mBackgroundRadius-15;
 
-        backgroundPaint.setColor(Color.GRAY);
-        backgroundPaint.setAlpha(80);
+        mBackgroundPaint.setColor(Color.GRAY);
+        mBackgroundPaint.setAlpha(80);
 
-        ballPaint.setColor(Color.WHITE);
-        ballPaint.setAlpha(150);
-
+        mBallPaint.setColor(Color.WHITE);
+        mBallPaint.setAlpha(150);
 
         Keyframe kf0 = Keyframe.ofFloat(0f, 25);
         Keyframe kf1 = Keyframe.ofFloat(.4f, 32);
@@ -88,16 +92,19 @@ public class MyFloatBallView extends View {
 
 
         mStatusBarHeight = getStatusBarHeight();
-        mOffsetToParent = dip2px(backgroundRadius/2);
+        mOffsetToParent = dip2px(mBackgroundRadius /2);
         mOffsetToParentY = mStatusBarHeight + mOffsetToParent;
+
+        mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        canvas.drawCircle(50, 50, backgroundRadius, backgroundPaint);
-        canvas.drawCircle(50, 50, ballRadius, ballPaint);
+        canvas.drawCircle(50, 50, mBackgroundRadius, mBackgroundPaint);
+        canvas.drawCircle(50, 50, ballRadius, mBallPaint);
 
     }
 
@@ -163,6 +170,7 @@ public class MyFloatBallView extends View {
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+
             return false;
         }
     }
