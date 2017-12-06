@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.github.glomadrian.materialanimatedswitch.MaterialAnimatedSwitch;
+
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
 /*
@@ -27,6 +29,7 @@ public class MainActivity extends Activity {
     private Button mBtnStart;
     private Button mBtnQuit;
     private DiscreteSeekBar opacitySeekbar;
+    private MaterialAnimatedSwitch swith;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,9 +57,30 @@ public class MainActivity extends Activity {
 
     private void initView() {
         opacitySeekbar = (DiscreteSeekBar) findViewById(R.id.opacity_seekbar);
-
+        swith = (MaterialAnimatedSwitch) findViewById(R.id.start_switch);
         mBtnStart = (Button) findViewById(R.id.btn_start);
         mBtnQuit = (Button) findViewById(R.id.btn_quit);
+        swith.setOnCheckedChangeListener(new MaterialAnimatedSwitch.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(boolean b) {
+                if(b){
+                    checkAccessibility();
+                    Intent intent = new Intent(MainActivity.this, FloatBallService.class);
+                    Bundle data = new Bundle();
+                    data.putInt("type", FloatBallService.TYPE_ADD);
+                    intent.putExtras(data);
+                    startService(intent);
+                    opacitySeekbar.setEnabled(true);
+                }else{
+                    Intent intent = new Intent(MainActivity.this, FloatBallService.class);
+                    Bundle data = new Bundle();
+                    data.putInt("type", FloatBallService.TYPE_DEL);
+                    intent.putExtras(data);
+                    startService(intent);
+                    opacitySeekbar.setEnabled(false);
+                }
+            }
+        });
         mBtnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
