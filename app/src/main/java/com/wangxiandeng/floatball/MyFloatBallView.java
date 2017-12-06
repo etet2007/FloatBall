@@ -82,6 +82,10 @@ public class MyFloatBallView extends View {
         this.mBackgroundRadius = mBackgroundRadius;
     }
 
+    public void setOpacity(int opacity){
+        mBackgroundPaint.setAlpha(opacity);
+        mBallPaint.setAlpha(opacity);
+    }
     public MyFloatBallView(Context context) {
         super(context);
         mService = (AccessibilityService) context;

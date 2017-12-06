@@ -8,6 +8,9 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
+
 /*
 
 判断版本，使用Build.VERSION.SDK_INT
@@ -23,7 +26,7 @@ public class MainActivity extends Activity {
 
     private Button mBtnStart;
     private Button mBtnQuit;
-
+    private DiscreteSeekBar opacitySeekbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +53,8 @@ public class MainActivity extends Activity {
     }
 
     private void initView() {
+        opacitySeekbar = (DiscreteSeekBar) findViewById(R.id.opacity_seekbar);
+
         mBtnStart = (Button) findViewById(R.id.btn_start);
         mBtnQuit = (Button) findViewById(R.id.btn_quit);
         mBtnStart.setOnClickListener(new View.OnClickListener() {
@@ -62,6 +67,7 @@ public class MainActivity extends Activity {
                 data.putInt("type", FloatBallService.TYPE_ADD);
                 intent.putExtras(data);
                 startService(intent);
+                opacitySeekbar.setEnabled(true);
             }
         });
         mBtnQuit.setOnClickListener(new View.OnClickListener() {
@@ -72,6 +78,29 @@ public class MainActivity extends Activity {
                 data.putInt("type", FloatBallService.TYPE_DEL);
                 intent.putExtras(data);
                 startService(intent);
+                opacitySeekbar.setEnabled(false);
+            }
+        });
+        opacitySeekbar.setEnabled(false);
+        opacitySeekbar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
+            @Override
+            public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
+                Intent intent = new Intent(MainActivity.this, FloatBallService.class);
+                Bundle data = new Bundle();
+                data.putInt("type", FloatBallService.TYPE_OPACITY);
+                data.putInt("opacity", value);
+                intent.putExtras(data);
+                startService(intent);
+            }
+
+            @Override
+            public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
+
             }
         });
     }

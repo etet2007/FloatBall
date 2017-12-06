@@ -60,5 +60,9 @@ public class FloatWindowManager {
         }
         return mWindowManager;
     }
-
+    public static void setOpacity(Context context,int opacity) {
+        mBallView.setOpacity(opacity);
+        mBallView.invalidate();
+    }
 }
+

@@ -3,6 +3,7 @@ package com.wangxiandeng.floatball;
 import android.accessibilityservice.AccessibilityService;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
 /**
@@ -13,8 +14,10 @@ import android.view.accessibility.AccessibilityEvent;
  */
 
 public class FloatBallService extends AccessibilityService {
+
     public static final int TYPE_ADD = 0;
     public static final int TYPE_DEL = 1;
+    public static final int TYPE_OPACITY =2;
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
@@ -36,8 +39,11 @@ public class FloatBallService extends AccessibilityService {
             int type = data.getInt("type");
             if (type == TYPE_ADD) {
                 FloatWindowManager.addBallView(this);
-            } else {
+            } else if(type==TYPE_DEL){
                 FloatWindowManager.removeBallView(this);
+            }else if(type==TYPE_OPACITY){
+                Log.d("lqt", "onStartCommand: opacity");
+                FloatWindowManager.setOpacity(this,data.getInt("opacity"));
             }
         }
         return super.onStartCommand(intent, flags, startId);
