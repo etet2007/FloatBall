@@ -6,6 +6,9 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -34,9 +37,7 @@ public class MyFloatBallView extends View {
     private GESTURE currentGesture;
 
     public enum GESTURE {
-
         UP, DOWN, LEFT, RIGHT,NONE
-
     }
 
     private float mBackgroundRadius=40;
@@ -140,7 +141,10 @@ public class MyFloatBallView extends View {
 
         canvas.drawCircle(50, 50, mBackgroundRadius, mBackgroundPaint);
         canvas.drawCircle(ballCenterX, ballCenterY, ballRadius, mBallPaint);
+        Resources res=getResources();
 
+        Bitmap bmp= BitmapFactory.decodeResource(res, R.drawable.joe);
+        canvas.drawBitmap(bmp,25f,25f,null);
     }
 
     @Override

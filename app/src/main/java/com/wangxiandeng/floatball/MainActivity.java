@@ -2,11 +2,12 @@ package com.wangxiandeng.floatball;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.view.View;
-import android.widget.Button;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.github.glomadrian.materialanimatedswitch.MaterialAnimatedSwitch;
@@ -26,14 +27,18 @@ import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 */
 public class MainActivity extends Activity {
 
-    private Button mBtnStart;
-    private Button mBtnQuit;
     private DiscreteSeekBar opacitySeekbar;
-    private MaterialAnimatedSwitch swith;
+    private MaterialAnimatedSwitch ballSwith;
+    SharedPreferences prefs;
+    private boolean isOpenBall;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        isOpenBall=prefs.getBoolean("isOpenBall",false);
+
         initView();
         //判断版本，使用Build.VERSION.SDK_INT
         //Build: Information about the current build, extracted from system properties.
@@ -53,14 +58,21 @@ public class MainActivity extends Activity {
                 Toast.makeText(this, "请先允许FloatBall出现在顶部", Toast.LENGTH_SHORT).show();
             }
         }
+
+
+
     }
 
     private void initView() {
         opacitySeekbar = (DiscreteSeekBar) findViewById(R.id.opacity_seekbar);
-        swith = (MaterialAnimatedSwitch) findViewById(R.id.start_switch);
-        mBtnStart = (Button) findViewById(R.id.btn_start);
-        mBtnQuit = (Button) findViewById(R.id.btn_quit);
-        swith.setOnCheckedChangeListener(new MaterialAnimatedSwitch.OnCheckedChangeListener() {
+        ballSwith = (MaterialAnimatedSwitch) findViewById(R.id.start_switch);
+        if(isOpenBall)
+            ballSwith.post(new Runnable() {
+                public void run() {
+                    ballSwith.toggle();
+                }
+            });
+        ballSwith.setOnCheckedChangeListener(new MaterialAnimatedSwitch.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(boolean b) {
                 if(b){
@@ -79,32 +91,10 @@ public class MainActivity extends Activity {
                     startService(intent);
                     opacitySeekbar.setEnabled(false);
                 }
+                isOpenBall=b;
             }
         });
-        mBtnStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                设置辅助功能
-                checkAccessibility();
-                Intent intent = new Intent(MainActivity.this, FloatBallService.class);
-                Bundle data = new Bundle();
-                data.putInt("type", FloatBallService.TYPE_ADD);
-                intent.putExtras(data);
-                startService(intent);
-                opacitySeekbar.setEnabled(true);
-            }
-        });
-        mBtnQuit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, FloatBallService.class);
-                Bundle data = new Bundle();
-                data.putInt("type", FloatBallService.TYPE_DEL);
-                intent.putExtras(data);
-                startService(intent);
-                opacitySeekbar.setEnabled(false);
-            }
-        });
+
         opacitySeekbar.setEnabled(false);
         opacitySeekbar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
             @Override
@@ -127,6 +117,18 @@ public class MainActivity extends Activity {
 
             }
         });
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("lqt", "onDestroy isOpenBall: "+isOpenBall);
+
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("isOpenBall", isOpenBall); // value to store
+        editor.apply();
+
     }
 
     private void checkAccessibility() {
