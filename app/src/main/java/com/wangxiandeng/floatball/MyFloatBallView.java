@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
 import android.util.TypedValue;
@@ -29,14 +30,36 @@ import java.lang.reflect.Field;
 
 public class MyFloatBallView extends View {
     public static final String TAG="lqt";
+    private final int ballMoveDistance = 18;
     private Paint mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Paint mBallPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private float ballCenterY=50;
-    private float ballCenterX=50;
-    private boolean isScrolling=false;
-    private GESTURE currentGesture;
 
-    public enum GESTURE {
+    public float getBallCenterY() {
+        return ballCenterY;
+    }
+
+    public void setBallCenterY(float ballCenterY) {
+        this.ballCenterY = ballCenterY;
+    }
+
+    private float ballCenterY=0;
+
+    public float getBallCenterX() {
+        return ballCenterX;
+    }
+
+    public void setBallCenterX(float ballCenterX) {
+        this.ballCenterX = ballCenterX;
+    }
+
+    private float ballCenterX=0;
+    private boolean isScrolling=false;
+    private GESTURE_STATE currentGestureSTATE;
+
+    private int measuredWidth=100;
+    private int measuredHeight=100;
+
+    public enum GESTURE_STATE {
         UP, DOWN, LEFT, RIGHT,NONE
     }
 
@@ -51,7 +74,7 @@ public class MyFloatBallView extends View {
 
     private int mTouchSlop;
 
-    private GESTURE lastGesture=GESTURE.NONE;
+    private GESTURE_STATE lastGestureSTATE = GESTURE_STATE.NONE;
 
     private GestureDetectorCompat mDetector;
     private AccessibilityService mService;
@@ -60,10 +83,8 @@ public class MyFloatBallView extends View {
     private ObjectAnimator onTouchAnimat;
     private ObjectAnimator unTouchAnimat;
 
-//    private float firstScrollX;
-//    private float firstScrollY;
-
-
+    Path circlePath;
+    Bitmap bmp;
     public void setLayoutParams(WindowManager.LayoutParams params) {
         mLayoutParams = params;
     }
@@ -101,8 +122,8 @@ public class MyFloatBallView extends View {
 
         //生成动画
         Keyframe kf0 = Keyframe.ofFloat(0f, ballRadius);
-        Keyframe kf1 = Keyframe.ofFloat(.7f, ballRadius+7);
-        Keyframe kf2 = Keyframe.ofFloat(1f, ballRadius+8);
+        Keyframe kf1 = Keyframe.ofFloat(.7f, ballRadius+6);
+        Keyframe kf2 = Keyframe.ofFloat(1f, ballRadius+7);
         PropertyValuesHolder onTouch = PropertyValuesHolder.ofKeyframe("ballRadius", kf0,kf1,kf2);
         onTouchAnimat = ObjectAnimator.ofPropertyValuesHolder(this, onTouch);
         onTouchAnimat.setDuration(300);
@@ -114,8 +135,8 @@ public class MyFloatBallView extends View {
         });
 
 
-        Keyframe kf3 = Keyframe.ofFloat(0f, ballRadius+8);
-        Keyframe kf4 = Keyframe.ofFloat(0.3f, ballRadius+8);
+        Keyframe kf3 = Keyframe.ofFloat(0f, ballRadius+7);
+        Keyframe kf4 = Keyframe.ofFloat(0.3f, ballRadius+7);
         Keyframe kf5 = Keyframe.ofFloat(1f, ballRadius);
         PropertyValuesHolder unTouch = PropertyValuesHolder.ofKeyframe("ballRadius", kf3,kf4,kf5);
         unTouchAnimat = ObjectAnimator.ofPropertyValuesHolder(this, unTouch);
@@ -132,6 +153,13 @@ public class MyFloatBallView extends View {
         mOffsetToParentY = mStatusBarHeight + mOffsetToParent;
 
         mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+        Resources res=getResources();
+        bmp= BitmapFactory.decodeResource(res, R.drawable.joe);
+
+        circlePath = new Path();
+        circlePath.addCircle(0,0,ballRadius, Path.Direction.CW);
+
+
 
     }
 
@@ -139,18 +167,23 @@ public class MyFloatBallView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        canvas.drawCircle(50, 50, mBackgroundRadius, mBackgroundPaint);
-        canvas.drawCircle(ballCenterX, ballCenterY, ballRadius, mBallPaint);
-        Resources res=getResources();
+        canvas.translate(measuredWidth/2,measuredHeight/2);
+        canvas.drawCircle(0, 0, mBackgroundRadius, mBackgroundPaint);
 
-        Bitmap bmp= BitmapFactory.decodeResource(res, R.drawable.joe);
-        canvas.drawBitmap(bmp,25f,25f,null);
+        canvas.drawCircle(ballCenterX, ballCenterY, ballRadius, mBallPaint);
+
+        canvas.save();
+
+        canvas.clipPath(circlePath);
+//        canvas.drawBitmap(bmp,-bmp.getWidth()/2,-bmp.getHeight()/2,null);
+        canvas.restore();
+
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        setMeasuredDimension(100,100);
+        setMeasuredDimension(measuredWidth, measuredHeight);
     }
 
     @Override
@@ -159,7 +192,7 @@ public class MyFloatBallView extends View {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                Log.d(TAG, "onTouchEvent: Down");
+                //球放大动画
                 onTouchAnimat.start();
             case MotionEvent.ACTION_MOVE:
                 //移动模式中
@@ -172,12 +205,14 @@ public class MyFloatBallView extends View {
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
                 Log.d(TAG, "onTouchEvent: up");
+                //球缩小动画
                 unTouchAnimat.start();
                 if(isScrolling){
                     doGesture();
-                    currentGesture=GESTURE.NONE;
-                    lastGesture=GESTURE.NONE;
-                    moveFloatBall();
+                    //球移动动画
+                    moveFloatBallBack();
+                    currentGestureSTATE = GESTURE_STATE.NONE;
+                    lastGestureSTATE = GESTURE_STATE.NONE;
                     isScrolling=false;
                 }
                 isLongPress=false;
@@ -187,7 +222,7 @@ public class MyFloatBallView extends View {
     }
 
     private void doGesture() {
-        switch (currentGesture) {
+        switch (currentGestureSTATE) {
             case UP:
                 AccessibilityUtil.doPullUp(mService);
                 break;
@@ -220,7 +255,6 @@ public class MyFloatBallView extends View {
         //单击
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
-//            Log.d(TAG, "onSingleTapUp: ");
             AccessibilityUtil.doBack(mService);
             return false;
         }
@@ -240,22 +274,20 @@ public class MyFloatBallView extends View {
             float deltaY = lastScrollY - firstScrollY;
 
             double angle = Math.atan2(deltaY, deltaX);
-//            Log.d(TAG, "onScroll: angle:"+angle);
 
             if (angle > -Math.PI/4 && angle < Math.PI/4) {
-                currentGesture = GESTURE.RIGHT;
+                currentGestureSTATE = GESTURE_STATE.RIGHT;
             } else if (angle > Math.PI/4 && angle < Math.PI*3/4) {
-                currentGesture = GESTURE.DOWN;
+                currentGestureSTATE = GESTURE_STATE.DOWN;
             } else  if (angle > -Math.PI*3/4 && angle < -Math.PI/4) {
-                currentGesture = GESTURE.UP;
+                currentGestureSTATE = GESTURE_STATE.UP;
             }
               else{
-                currentGesture = GESTURE.LEFT;
+                currentGestureSTATE = GESTURE_STATE.LEFT;
             }
-            Log.d(TAG, "onScroll: gesture:"+currentGesture);
-            if(currentGesture!=lastGesture){
+            if(currentGestureSTATE != lastGestureSTATE){
                 moveFloatBall();
-                lastGesture=currentGesture;
+                lastGestureSTATE = currentGestureSTATE;
             }
             return false;
         }
@@ -268,40 +300,43 @@ public class MyFloatBallView extends View {
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-
             return false;
         }
     }
-//应该使用动画，要用变量记下位置
     private void moveFloatBall() {
-        switch (currentGesture){
+        switch (currentGestureSTATE){
             case UP:
-                ballCenterX=50;
-                ballCenterY=50-20;
+                ballCenterX=0;
+                ballCenterY=-ballMoveDistance;
                 break;
             case DOWN:
-                ballCenterY=50+20;
-                ballCenterX=50;
+                ballCenterY= ballMoveDistance;
+                ballCenterX=0;
                 break;
             case LEFT:
-                ballCenterX=50-20;
-                ballCenterY=50;
+                ballCenterX=-ballMoveDistance;
+                ballCenterY=0;
                 break;
             case RIGHT:
-                ballCenterX=50+20;
-                ballCenterY=50;
+                ballCenterX= ballMoveDistance;
+                ballCenterY=0;
                 break;
             case NONE:
-                ballCenterX=50;
-                ballCenterY=50;
+                ballCenterX=0;
+                ballCenterY=0;
                 break;
         }
         invalidate();
     }
 
+    private void moveFloatBallBack() {
+        PropertyValuesHolder pvh1=PropertyValuesHolder.ofFloat("ballCenterX",0);
+        PropertyValuesHolder pvh2=PropertyValuesHolder.ofFloat("ballCenterY",0);
+        ObjectAnimator.ofPropertyValuesHolder(this, pvh1, pvh2).setDuration(300).start();
+    }
+
     /**
      * 获取通知栏高度
-     *
      * @return
      */
     private int getStatusBarHeight() {
@@ -317,6 +352,7 @@ public class MyFloatBallView extends View {
         }
         return statusBarHeight;
     }
+
     public int dip2px(float dip) {
         return (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, dip, getContext().getResources().getDisplayMetrics()

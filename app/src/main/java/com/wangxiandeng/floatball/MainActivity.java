@@ -58,9 +58,6 @@ public class MainActivity extends Activity {
                 Toast.makeText(this, "请先允许FloatBall出现在顶部", Toast.LENGTH_SHORT).show();
             }
         }
-
-
-
     }
 
     private void initView() {
@@ -123,7 +120,6 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d("lqt", "onDestroy isOpenBall: "+isOpenBall);
 
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean("isOpenBall", isOpenBall); // value to store
