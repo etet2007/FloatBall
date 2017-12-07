@@ -11,8 +11,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
 import android.util.TypedValue;
@@ -83,8 +86,8 @@ public class MyFloatBallView extends View {
     private ObjectAnimator onTouchAnimat;
     private ObjectAnimator unTouchAnimat;
 
-    Path circlePath;
-    Bitmap bmp;
+    private Bitmap bitmapRead;
+    private Bitmap bitmapCrop;
     public void setLayoutParams(WindowManager.LayoutParams params) {
         mLayoutParams = params;
     }
@@ -154,15 +157,24 @@ public class MyFloatBallView extends View {
 
         mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
         Resources res=getResources();
-        bmp= BitmapFactory.decodeResource(res, R.drawable.joe);
+        bitmapRead = BitmapFactory.decodeResource(res, R.drawable.joe);
 
-        circlePath = new Path();
-        circlePath.addCircle(0,0,ballRadius, Path.Direction.CW);
 
+        int width=(int)ballRadius*2;
+        int height=(int)ballRadius*2;
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmapRead, width, height, true);
+
+        bitmapCrop = Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmapCrop);
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        canvas.drawCircle(width/2, height/2, 25, paint);
+        paint.reset();
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(scaledBitmap, 0, 0, paint);
 
 
     }
-
+    Matrix matrix = new Matrix();
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -172,11 +184,7 @@ public class MyFloatBallView extends View {
 
         canvas.drawCircle(ballCenterX, ballCenterY, ballRadius, mBallPaint);
 
-        canvas.save();
-
-        canvas.clipPath(circlePath);
-//        canvas.drawBitmap(bmp,-bmp.getWidth()/2,-bmp.getHeight()/2,null);
-        canvas.restore();
+        canvas.drawBitmap(bitmapCrop,-bitmapCrop.getWidth()/2+ballCenterX,-bitmapCrop.getHeight()/2+ballCenterY,null);
 
     }
 
@@ -326,6 +334,7 @@ public class MyFloatBallView extends View {
                 ballCenterY=0;
                 break;
         }
+
         invalidate();
     }
 

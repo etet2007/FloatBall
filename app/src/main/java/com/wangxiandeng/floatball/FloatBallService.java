@@ -26,6 +26,7 @@ public class FloatBallService extends AccessibilityService {
 
     @Override
     public void onInterrupt() {
+        Log.d("lqt", "onInterrupt");
 
     }
 
@@ -34,23 +35,26 @@ public class FloatBallService extends AccessibilityService {
 // Do not call this method directly.
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Bundle data = intent.getExtras();
-        if (data != null) {
-            int type = data.getInt("type");
-            if (type == TYPE_ADD) {
-                FloatBallManager.addBallView(this);
-            } else if(type==TYPE_DEL){
-                FloatBallManager.removeBallView(this);
-            }else if(type==TYPE_OPACITY){
-                Log.d("lqt", "onStartCommand: opacity");
-                FloatBallManager.setOpacity(this,data.getInt("opacity"));
+        if(intent!=null){
+            Bundle data = intent.getExtras();
+            if (data != null) {
+                int type = data.getInt("type");
+                if (type == TYPE_ADD) {
+                    FloatBallManager.addBallView(this);
+                } else if(type==TYPE_DEL){
+                    FloatBallManager.removeBallView(this);
+                }else if(type==TYPE_OPACITY){
+                    FloatBallManager.setOpacity(this,data.getInt("opacity"));
+                }
             }
         }
+
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d("lqt", "onCreate");
     }
 }

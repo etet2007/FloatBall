@@ -62,7 +62,6 @@ public class AccessibilityUtil {
             //List of the enabled accessibility providers.   accessibility里面有个Services列表。
             String services = Settings.Secure.getString(context.getContentResolver(),
                     Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
-            Log.d("lqt", services);
             if (services != null) {
                 return services.toLowerCase().contains(context.getPackageName().toLowerCase());
             }
