@@ -3,11 +3,13 @@ package com.wangxiandeng.floatball;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.github.glomadrian.materialanimatedswitch.MaterialAnimatedSwitch;
@@ -28,7 +30,8 @@ import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 public class MainActivity extends Activity {
 
     private DiscreteSeekBar opacitySeekbar;
-    private MaterialAnimatedSwitch ballSwith;
+    private MaterialAnimatedSwitch ballSwitch;
+    private ImageView logoImageview;
     SharedPreferences prefs;
     private boolean isOpenBall;
     @Override
@@ -62,33 +65,36 @@ public class MainActivity extends Activity {
 
     private void initView() {
         opacitySeekbar = (DiscreteSeekBar) findViewById(R.id.opacity_seekbar);
-        ballSwith = (MaterialAnimatedSwitch) findViewById(R.id.start_switch);
-        if(isOpenBall)
-            ballSwith.post(new Runnable() {
+        logoImageview = (ImageView) findViewById(R.id.logo_imageview);
+        logoImageview.getBackground().setAlpha(125);
+        ballSwitch = (MaterialAnimatedSwitch) findViewById(R.id.start_switch);
+        if(isOpenBall) {
+            //不这样写会崩溃
+            ballSwitch.post(new Runnable() {
                 public void run() {
-                    ballSwith.toggle();
+                    ballSwitch.toggle();
                 }
             });
-        ballSwith.setOnCheckedChangeListener(new MaterialAnimatedSwitch.OnCheckedChangeListener() {
+        }
+        logoImageview.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(boolean b) {
-                if(b){
-                    checkAccessibility();
-                    Intent intent = new Intent(MainActivity.this, FloatBallService.class);
-                    Bundle data = new Bundle();
-                    data.putInt("type", FloatBallService.TYPE_ADD);
-                    intent.putExtras(data);
-                    startService(intent);
-                    opacitySeekbar.setEnabled(true);
+            public void onClick(View v) {
+                if(isOpenBall){
+                    removeFloatBall();
                 }else{
-                    Intent intent = new Intent(MainActivity.this, FloatBallService.class);
-                    Bundle data = new Bundle();
-                    data.putInt("type", FloatBallService.TYPE_DEL);
-                    intent.putExtras(data);
-                    startService(intent);
-                    opacitySeekbar.setEnabled(false);
+                    openFloatBall();
                 }
-                isOpenBall=b;
+                ballSwitch.toggle();
+            }
+        });
+        ballSwitch.setOnCheckedChangeListener(new MaterialAnimatedSwitch.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(boolean check) {
+                if(check){
+                    openFloatBall();
+                }else{
+                    removeFloatBall();
+                }
             }
         });
 
@@ -114,6 +120,30 @@ public class MainActivity extends Activity {
 
             }
         });
+    }
+
+    private void removeFloatBall() {
+        Intent intent = new Intent(MainActivity.this, FloatBallService.class);
+        Bundle data = new Bundle();
+        data.putInt("type", FloatBallService.TYPE_DEL);
+        intent.putExtras(data);
+        startService(intent);
+        opacitySeekbar.setEnabled(false);
+        logoImageview.getBackground().setAlpha(125);
+
+        isOpenBall=false;
+    }
+
+    private void openFloatBall() {
+        checkAccessibility();
+        Intent intent = new Intent(MainActivity.this, FloatBallService.class);
+        Bundle data = new Bundle();
+        data.putInt("type", FloatBallService.TYPE_ADD);
+        intent.putExtras(data);
+        startService(intent);
+        opacitySeekbar.setEnabled(true);
+        logoImageview.getBackground().setAlpha(255);
+        isOpenBall=true;
     }
 
 

@@ -38,12 +38,12 @@ public class FloatBallService extends AccessibilityService {
         if (data != null) {
             int type = data.getInt("type");
             if (type == TYPE_ADD) {
-                FloatWindowManager.addBallView(this);
+                FloatBallManager.addBallView(this);
             } else if(type==TYPE_DEL){
-                FloatWindowManager.removeBallView(this);
+                FloatBallManager.removeBallView(this);
             }else if(type==TYPE_OPACITY){
                 Log.d("lqt", "onStartCommand: opacity");
-                FloatWindowManager.setOpacity(this,data.getInt("opacity"));
+                FloatBallManager.setOpacity(this,data.getInt("opacity"));
             }
         }
         return super.onStartCommand(intent, flags, startId);

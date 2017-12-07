@@ -13,7 +13,7 @@ import android.view.WindowManager.LayoutParams;
  * Created by wangxiandeng on 2016/11/25.
  */
 
-public class FloatWindowManager {
+public class FloatBallManager {
     //View
     private static MyFloatBallView mBallView;
     //WindowManager
@@ -22,7 +22,7 @@ public class FloatWindowManager {
 
     public static void addBallView(Context context) {
         if (mBallView == null) {
-//            screenWidth screenHeight
+//          Get screenWidth screenHeight
             WindowManager windowManager = getWindowManager(context);
             Point size = new Point();
             windowManager.getDefaultDisplay().getSize(size);
@@ -30,7 +30,7 @@ public class FloatWindowManager {
             int screenHeight = size.y;
             //初始化FloatBallView
             mBallView = new MyFloatBallView(context);
-
+            //初始化LayoutParams
             LayoutParams params = new LayoutParams();
             params.x = screenWidth / 2;
             params.y = screenHeight / 2;
