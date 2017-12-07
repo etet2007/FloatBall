@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
+
 /**
  * Accessibility services should only be used to assist users with disabilities in using Android devices and apps.
  *  Such a service can optionally随意地 request the capability能力 for querying the content of the active window.
@@ -27,7 +28,6 @@ public class FloatBallService extends AccessibilityService {
     @Override
     public void onInterrupt() {
         Log.d("lqt", "onInterrupt");
-
     }
 
 //    Called by the system every time a client explicitly starts the service by calling startService(Intent),
@@ -35,15 +35,17 @@ public class FloatBallService extends AccessibilityService {
 // Do not call this method directly.
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(intent!=null){
+        if(intent != null) {
             Bundle data = intent.getExtras();
             if (data != null) {
                 int type = data.getInt("type");
                 if (type == TYPE_ADD) {
                     FloatBallManager.addBallView(this);
-                } else if(type==TYPE_DEL){
+                }
+                if(type== TYPE_DEL){
                     FloatBallManager.removeBallView(this);
-                }else if(type==TYPE_OPACITY){
+                }
+                if(type==TYPE_OPACITY){
                     FloatBallManager.setOpacity(this,data.getInt("opacity"));
                 }
             }
@@ -51,10 +53,31 @@ public class FloatBallService extends AccessibilityService {
 
         return super.onStartCommand(intent, flags, startId);
     }
+/*
+public enum CropType {
+        CIRCLE(1), RECTANGLE(2);
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Log.d("lqt", "onCreate");
+        private int mValue;
+
+        CropType(int value) {
+            this.mValue = value;
+        }
+
+        public int value() {
+            return mValue;
+        }
+
+        public static CropType valueOf(int value) {
+            switch (value) {
+                case CropImageBorderView.CIRCLE:
+                    return CIRCLE;
+                case CropImageBorderView.RECTANGLE:
+                    return RECTANGLE;
+                default:
+                    return null;
+            }
+        }
     }
+ */
+
 }

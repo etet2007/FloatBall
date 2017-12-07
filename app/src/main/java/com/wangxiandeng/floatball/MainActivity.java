@@ -8,13 +8,10 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v7.widget.SwitchCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Toast;
-
-import com.github.glomadrian.materialanimatedswitch.MaterialAnimatedSwitch;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
@@ -132,7 +129,6 @@ public class MainActivity extends Activity {
         startService(intent);
         opacitySeekbar.setEnabled(false);
         logoImageView.getBackground().setAlpha(125);
-        stopService(intent);
 
         isOpenBall=false;
     }

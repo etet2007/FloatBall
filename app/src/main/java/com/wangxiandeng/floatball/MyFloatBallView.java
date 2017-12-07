@@ -16,6 +16,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.os.Build;
 import android.os.Vibrator;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
@@ -74,7 +75,6 @@ public class MyFloatBallView extends View {
     private WindowManager.LayoutParams mLayoutParams;
     private int mStatusBarHeight;
 
-    private int mTouchSlop;
 
     private GESTURE_STATE lastGestureSTATE = GESTURE_STATE.NONE;
 
@@ -84,10 +84,11 @@ public class MyFloatBallView extends View {
     private WindowManager mWindowManager;
     private ObjectAnimator onTouchAnimat;
     private ObjectAnimator unTouchAnimat;
-
+    //Vibrator
     private Vibrator mVibrator;
     private long[] mPattern = {0, 100};
 
+    Path path = new Path();
     //    private Bitmap bitmapRead;
     private Bitmap bitmapCrop;
     public void setLayoutParams(WindowManager.LayoutParams params) {
@@ -159,7 +160,7 @@ public class MyFloatBallView extends View {
         mOffsetToParent = dip2px(mBackgroundRadius /2);
         mOffsetToParentY = mStatusBarHeight + mOffsetToParent;
 
-        mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+//        mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
         Resources res=getResources();
         Bitmap bitmapRead = BitmapFactory.decodeResource(res, R.drawable.joe);
 
@@ -184,7 +185,6 @@ public class MyFloatBallView extends View {
 
         canvas.translate(measuredWidth/2,measuredHeight/2);
         canvas.drawCircle(0, 0, mBackgroundRadius, mBackgroundPaint);
-
         canvas.drawCircle(ballCenterX, ballCenterY, ballRadius, mBallPaint);
 
         canvas.drawBitmap(bitmapCrop,-bitmapCrop.getWidth()/2+ballCenterX,-bitmapCrop.getHeight()/2+ballCenterY,null);
@@ -215,7 +215,7 @@ public class MyFloatBallView extends View {
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                Log.d(TAG, "onTouchEvent: up");
+//                Log.d(TAG, "onTouchEvent: up");
                 //球缩小动画
                 unTouchAnimat.start();
                 if(isScrolling){
