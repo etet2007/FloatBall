@@ -16,6 +16,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.os.Vibrator;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
 import android.util.TypedValue;
@@ -40,28 +41,26 @@ public class MyFloatBallView extends View {
     public float getBallCenterY() {
         return ballCenterY;
     }
-
     public void setBallCenterY(float ballCenterY) {
         this.ballCenterY = ballCenterY;
     }
 
+    private float ballCenterX=0;
     private float ballCenterY=0;
 
     public float getBallCenterX() {
         return ballCenterX;
     }
-
     public void setBallCenterX(float ballCenterX) {
         this.ballCenterX = ballCenterX;
     }
 
-    private float ballCenterX=0;
     private boolean isScrolling=false;
-    private GESTURE_STATE currentGestureSTATE;
 
     private int measuredWidth=100;
     private int measuredHeight=100;
 
+    private GESTURE_STATE currentGestureSTATE;
     public enum GESTURE_STATE {
         UP, DOWN, LEFT, RIGHT,NONE
     }
@@ -86,7 +85,10 @@ public class MyFloatBallView extends View {
     private ObjectAnimator onTouchAnimat;
     private ObjectAnimator unTouchAnimat;
 
-    private Bitmap bitmapRead;
+    private Vibrator mVibrator;
+    private long[] mPattern = {0, 100};
+
+    //    private Bitmap bitmapRead;
     private Bitmap bitmapCrop;
     public void setLayoutParams(WindowManager.LayoutParams params) {
         mLayoutParams = params;
@@ -116,6 +118,8 @@ public class MyFloatBallView extends View {
         mService = (AccessibilityService) context;
         mWindowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         mDetector=new GestureDetectorCompat(context,new MyGestureListener());
+        mVibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+
 
         mBackgroundPaint.setColor(Color.GRAY);
         mBackgroundPaint.setAlpha(80);
@@ -157,7 +161,7 @@ public class MyFloatBallView extends View {
 
         mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
         Resources res=getResources();
-        bitmapRead = BitmapFactory.decodeResource(res, R.drawable.joe);
+        Bitmap bitmapRead = BitmapFactory.decodeResource(res, R.drawable.joe);
 
 
         int width=(int)ballRadius*2;
@@ -174,7 +178,6 @@ public class MyFloatBallView extends View {
 
 
     }
-    Matrix matrix = new Matrix();
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -302,7 +305,7 @@ public class MyFloatBallView extends View {
 
         @Override
         public void onLongPress(MotionEvent e) {
-            Log.d(TAG, "onLongPress: ");
+            mVibrator.vibrate(mPattern, -1);
             isLongPress=true;
         }
 

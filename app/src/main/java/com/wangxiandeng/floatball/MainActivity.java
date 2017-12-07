@@ -100,7 +100,6 @@ public class MainActivity extends Activity {
             }
         });
 
-
         opacitySeekbar.setEnabled(false);
         opacitySeekbar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
             @Override
