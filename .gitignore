@@ -1,6 +1,9 @@
 .gradle/
 .idea/
 local.properties
-local.properties
+<<<<<<< HEAD
 *.rawproto
 *.json
+=======
+*.properties
+>>>>>>> f49f2f956c645ab320bcec61d2750a9ff93988cc

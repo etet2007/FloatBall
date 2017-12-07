@@ -2,12 +2,19 @@ package com.wangxiandeng.floatball;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.support.v7.widget.SwitchCompat;
 import android.view.View;
-import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.Toast;
+
+import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
+
 /*
 
 判断版本，使用Build.VERSION.SDK_INT
@@ -21,13 +28,18 @@ import android.widget.Toast;
 */
 public class MainActivity extends Activity {
 
-    private Button mBtnStart;
-    private Button mBtnQuit;
-
+    private DiscreteSeekBar opacitySeekbar;
+    private SwitchCompat ballSwitch;
+    private ImageView logoImageView;
+    SharedPreferences prefs;
+    private boolean isOpenBall;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        isOpenBall=prefs.getBoolean("isOpenBall",false);
         initView();
         //判断版本，使用Build.VERSION.SDK_INT
         //Build: Information about the current build, extracted from system properties.
@@ -50,30 +62,98 @@ public class MainActivity extends Activity {
     }
 
     private void initView() {
-        mBtnStart = (Button) findViewById(R.id.btn_start);
-        mBtnQuit = (Button) findViewById(R.id.btn_quit);
-        mBtnStart.setOnClickListener(new View.OnClickListener() {
+        opacitySeekbar = (DiscreteSeekBar) findViewById(R.id.opacity_seekbar);
+        logoImageView = (ImageView) findViewById(R.id.logo_imageview);
+        logoImageView.getBackground().setAlpha(125);
+        ballSwitch = (SwitchCompat) findViewById(R.id.start_switch);
+        if(isOpenBall) {
+//            ballSwitch.setChecked(true);
+            //不这样写会崩溃
+            ballSwitch.post(new Runnable() {
+                public void run() {
+                    ballSwitch.toggle();
+                }
+            });
+        }
+        logoImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                设置辅助功能
-                checkAccessibility();
+                if(isOpenBall){
+                    removeFloatBall();
+                }else{
+                    openFloatBall();
+                }
+                ballSwitch.toggle();
+            }
+        });
+        ballSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    openFloatBall();
+                }else{
+                    removeFloatBall();
+                }
+            }
+        });
+
+        opacitySeekbar.setEnabled(false);
+        opacitySeekbar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
+            @Override
+            public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
                 Intent intent = new Intent(MainActivity.this, FloatBallService.class);
                 Bundle data = new Bundle();
-                data.putInt("type", FloatBallService.TYPE_ADD);
+                data.putInt("type", FloatBallService.TYPE_OPACITY);
+                data.putInt("opacity", value);
                 intent.putExtras(data);
                 startService(intent);
             }
-        });
-        mBtnQuit.setOnClickListener(new View.OnClickListener() {
+
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, FloatBallService.class);
-                Bundle data = new Bundle();
-                data.putInt("type", FloatBallService.TYPE_DEL);
-                intent.putExtras(data);
-                startService(intent);
+            public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
+
             }
         });
+    }
+
+    private void removeFloatBall() {
+        Intent intent = new Intent(MainActivity.this, FloatBallService.class);
+        Bundle data = new Bundle();
+        data.putInt("type", FloatBallService.TYPE_DEL);
+        intent.putExtras(data);
+        startService(intent);
+        opacitySeekbar.setEnabled(false);
+        logoImageView.getBackground().setAlpha(125);
+
+        isOpenBall=false;
+    }
+
+    private void openFloatBall() {
+        checkAccessibility();
+        Intent intent = new Intent(MainActivity.this, FloatBallService.class);
+        Bundle data = new Bundle();
+        data.putInt("type", FloatBallService.TYPE_ADD);
+        intent.putExtras(data);
+        startService(intent);
+        opacitySeekbar.setEnabled(true);
+        logoImageView.getBackground().setAlpha(255);
+        isOpenBall=true;
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("isOpenBall", isOpenBall); // value to store
+        editor.apply();
+
     }
 
     private void checkAccessibility() {

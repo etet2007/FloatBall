@@ -19,6 +19,11 @@ android {
     }
 }
 
+repositories {
+    maven {
+        url "http://dl.bintray.com/glomadrian/maven"
+    }
+}
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -26,4 +31,6 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:24.2.1'
     testCompile 'junit:junit:4.12'
+    implementation 'org.adw.library:discrete-seekbar:1.0.1'
+    implementation 'com.github.glomadrian:MaterialAnimatedSwitch:1.1@aar'
 }

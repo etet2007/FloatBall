@@ -171,7 +171,7 @@ public class FloatBallView extends LinearLayout {
      */
     private void toRemove() {
         mVibrator.vibrate(mPattern, -1);
-        FloatWindowManager.removeBallView(getContext());
+        FloatBallManager.removeBallView(getContext());
     }
 
     /**
