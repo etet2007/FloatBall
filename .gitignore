@@ -2,3 +2,5 @@
 .idea/
 local.properties
 local.properties
+*.rawproto
+*.json
