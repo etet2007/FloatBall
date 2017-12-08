@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v7.widget.SwitchCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -28,18 +29,21 @@ import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 */
 public class MainActivity extends Activity {
 
-    private DiscreteSeekBar opacitySeekbar;
-    private SwitchCompat ballSwitch;
     private ImageView logoImageView;
+    private SwitchCompat ballSwitch;
+    //透明度SeekBar
+    private DiscreteSeekBar opacitySeekBar;
+
     SharedPreferences prefs;
     private boolean isOpenBall;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        //获取是否添加悬浮球的记录
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         isOpenBall=prefs.getBoolean("isOpenBall",false);
+
         initView();
         //判断版本，使用Build.VERSION.SDK_INT
         //Build: Information about the current build, extracted from system properties.
@@ -62,33 +66,36 @@ public class MainActivity extends Activity {
     }
 
     private void initView() {
-        opacitySeekbar = (DiscreteSeekBar) findViewById(R.id.opacity_seekbar);
+        opacitySeekBar = (DiscreteSeekBar) findViewById(R.id.opacity_seekbar);
         logoImageView = (ImageView) findViewById(R.id.logo_imageview);
-        logoImageView.getBackground().setAlpha(125);
         ballSwitch = (SwitchCompat) findViewById(R.id.start_switch);
+
         if(isOpenBall) {
-//            ballSwitch.setChecked(true);
-            //不这样写会崩溃
-            ballSwitch.post(new Runnable() {
-                public void run() {
-                    ballSwitch.toggle();
-                }
-            });
+            ballSwitch.setChecked(true);
+            logoImageView.getBackground().setAlpha(255);
+            opacitySeekBar.setEnabled(true);
+            //这样才会调用Listener接口
+//            ballSwitch.post(new Runnable() {
+//                public void run() {
+//                    ballSwitch.toggle();
+//                }
+//            });
+        }else{
+            logoImageView.getBackground().setAlpha(125);
+            ballSwitch.setChecked(false);
+            opacitySeekBar.setEnabled(false);
         }
+
         logoImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isOpenBall){
-                    removeFloatBall();
-                }else{
-                    openFloatBall();
-                }
                 ballSwitch.toggle();
             }
         });
         ballSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.d("lqt", "onCheckedChanged: ");
                 if(isChecked){
                     openFloatBall();
                 }else{
@@ -97,8 +104,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        opacitySeekbar.setEnabled(false);
-        opacitySeekbar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
+        opacitySeekBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
             @Override
             public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
                 Intent intent = new Intent(MainActivity.this, FloatBallService.class);
@@ -127,9 +133,9 @@ public class MainActivity extends Activity {
         data.putInt("type", FloatBallService.TYPE_DEL);
         intent.putExtras(data);
         startService(intent);
-        opacitySeekbar.setEnabled(false);
-        logoImageView.getBackground().setAlpha(125);
 
+        logoImageView.getBackground().setAlpha(125);
+        opacitySeekBar.setEnabled(false);
         isOpenBall=false;
     }
 
@@ -140,8 +146,9 @@ public class MainActivity extends Activity {
         data.putInt("type", FloatBallService.TYPE_ADD);
         intent.putExtras(data);
         startService(intent);
-        opacitySeekbar.setEnabled(true);
+
         logoImageView.getBackground().setAlpha(255);
+        opacitySeekBar.setEnabled(true);
         isOpenBall=true;
     }
 

@@ -24,15 +24,13 @@ public class FloatBallService extends AccessibilityService {
     public void onAccessibilityEvent(AccessibilityEvent event) {
 
     }
-
     @Override
     public void onInterrupt() {
         Log.d("lqt", "onInterrupt");
     }
-
 //    Called by the system every time a client explicitly starts the service by calling startService(Intent),
 // providing the arguments it supplied and a unique integer token representing the start request.
-// Do not call this method directly.
+// Do not call this method directly.d
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if(intent != null) {
