@@ -94,6 +94,9 @@ public class MyFloatBallView extends View {
     public void setLayoutParams(WindowManager.LayoutParams params) {
         mLayoutParams = params;
     }
+    public  WindowManager.LayoutParams getLayoutParams() {
+        return mLayoutParams;
+    }
 
     public float getBallRadius() {
         return ballRadius;
