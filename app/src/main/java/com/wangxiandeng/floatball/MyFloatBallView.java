@@ -31,6 +31,7 @@ import java.lang.reflect.Field;
 
 public class MyFloatBallView extends View {
     public static final String TAG="lqt";
+
     private final int ballMoveDistance = 18;
     private Paint mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Paint mBallPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -58,7 +59,7 @@ public class MyFloatBallView extends View {
 
     private float ballRadius=25;
     private float mBackgroundRadius=ballRadius+15;
-    //View宽高
+    //MyFloatBallView宽高
     private int measuredWidth= (int) (mBackgroundRadius*2+20);
     private int measuredHeight=measuredWidth;
 
@@ -99,24 +100,22 @@ public class MyFloatBallView extends View {
 
     private Bitmap bitmapRead;
     private Bitmap bitmapCrop;
+
     public void setLayoutParams(WindowManager.LayoutParams params) {
         mLayoutParams = params;
     }
     public  WindowManager.LayoutParams getLayoutParams() {
         return mLayoutParams;
     }
-
     public float getBallRadius() {
         return ballRadius;
     }
-
     public void setBallRadius(float ballRadius) {
         this.ballRadius = ballRadius;
     }
     public float getmBackgroundRadius() {
         return mBackgroundRadius;
     }
-
     public void setmBackgroundRadius(float mBackgroundRadius) {
         this.mBackgroundRadius = mBackgroundRadius;
     }
@@ -187,7 +186,6 @@ public class MyFloatBallView extends View {
                 invalidate();
             }
         });
-
 
         Keyframe kf3 = Keyframe.ofFloat(0f, ballRadius+7);
         Keyframe kf4 = Keyframe.ofFloat(0.3f, ballRadius+7);
