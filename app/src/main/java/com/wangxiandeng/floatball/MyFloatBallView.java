@@ -26,6 +26,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import java.lang.reflect.Field;
 
@@ -58,16 +59,28 @@ public class MyFloatBallView extends View {
 
     private boolean isScrolling=false;
 
-    private int measuredWidth=100;
-    private int measuredHeight=100;
 
+    private float ballRadius=25;
+    private float mBackgroundRadius=ballRadius+15;
+    //View宽高
+    private int measuredWidth= (int) (mBackgroundRadius*2+20);
+    private int measuredHeight=measuredWidth;
+
+    public void changeFloatBallSizeWithRadius(int ballRadius){
+        this.ballRadius=ballRadius;
+        mBackgroundRadius=ballRadius+15;
+        //View宽高
+        measuredWidth= (int) (mBackgroundRadius*2+20);
+        measuredHeight=measuredWidth;
+        makeAnimator();
+        makeBackgroundBitmap();
+        requestLayout();
+
+    }
     private GESTURE_STATE currentGestureSTATE;
     public enum GESTURE_STATE {
         UP, DOWN, LEFT, RIGHT,NONE
     }
-
-    private float mBackgroundRadius=40;
-    private float ballRadius=25;
 
     private boolean isLongPress=false;
     private int mOffsetToParent;
@@ -88,11 +101,13 @@ public class MyFloatBallView extends View {
     private Vibrator mVibrator;
     private long[] mPattern = {0, 100};
 
-    Path path = new Path();
-    //    private Bitmap bitmapRead;
+    private Bitmap bitmapRead;
     private Bitmap bitmapCrop;
     public void setLayoutParams(WindowManager.LayoutParams params) {
         mLayoutParams = params;
+    }
+    public  WindowManager.LayoutParams getLayoutParams() {
+        return mLayoutParams;
     }
 
     public float getBallRadius() {
@@ -121,7 +136,6 @@ public class MyFloatBallView extends View {
         mDetector=new GestureDetectorCompat(context,new MyGestureListener());
         mVibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
 
-
         mBackgroundPaint.setColor(Color.GRAY);
         mBackgroundPaint.setAlpha(80);
 
@@ -129,6 +143,53 @@ public class MyFloatBallView extends View {
         mBallPaint.setAlpha(150);
 
         //生成动画
+        makeAnimator();
+
+        mStatusBarHeight = getStatusBarHeight();
+        mOffsetToParent = dip2px(mBackgroundRadius /2);
+        mOffsetToParentY = mStatusBarHeight + mOffsetToParent;
+
+        Resources res=getResources();
+        bitmapRead = BitmapFactory.decodeResource(res, R.drawable.joe_big);
+
+        makeBackgroundBitmap();
+    }
+
+    private void makeBackgroundBitmap() {
+
+        int width=(int)ballRadius*2;
+        int height=(int)ballRadius*2;
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmapRead, width, height, true);
+
+        bitmapCrop = Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmapCrop);
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        canvas.drawCircle(width/2, height/2, ballRadius, paint);
+        paint.reset();
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(scaledBitmap, 0, 0, paint);
+    }
+    public void makeBackgroundBitmap(String imagePath) {
+        bitmapRead = BitmapFactory.decodeFile(imagePath);
+
+        int width=(int)ballRadius*2;
+        int height=(int)ballRadius*2;
+        if(bitmapRead==null){
+            Toast.makeText(mService, "Empty bitmap", Toast.LENGTH_LONG).show();
+            return;
+        }
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmapRead, width, height, true);
+
+        bitmapCrop = Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmapCrop);
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        canvas.drawCircle(width/2, height/2, ballRadius, paint);
+        paint.reset();
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(scaledBitmap, 0, 0, paint);
+    }
+
+    private void makeAnimator() {
         Keyframe kf0 = Keyframe.ofFloat(0f, ballRadius);
         Keyframe kf1 = Keyframe.ofFloat(.7f, ballRadius+6);
         Keyframe kf2 = Keyframe.ofFloat(1f, ballRadius+7);
@@ -155,30 +216,8 @@ public class MyFloatBallView extends View {
                 invalidate();
             }
         });
-
-        mStatusBarHeight = getStatusBarHeight();
-        mOffsetToParent = dip2px(mBackgroundRadius /2);
-        mOffsetToParentY = mStatusBarHeight + mOffsetToParent;
-
-//        mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
-        Resources res=getResources();
-        Bitmap bitmapRead = BitmapFactory.decodeResource(res, R.drawable.joe);
-
-
-        int width=(int)ballRadius*2;
-        int height=(int)ballRadius*2;
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmapRead, width, height, true);
-
-        bitmapCrop = Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmapCrop);
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        canvas.drawCircle(width/2, height/2, 25, paint);
-        paint.reset();
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(scaledBitmap, 0, 0, paint);
-
-
     }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
