@@ -62,6 +62,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         //获取悬浮球参数，用于初始化悬浮球
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         isOpenBall=prefs.getBoolean("isOpenBall",false);
@@ -69,6 +70,7 @@ public class MainActivity extends Activity {
         ballSize=prefs.getInt("opacity",25);
 
         initView();
+
         //判断版本，使用Build.VERSION.SDK_INT
         //Build: Information about the current build, extracted from system properties.
         //Build.VERSION: The user-visible SDK version of the framework; its possible values are defined in Build.VERSION_CODES.
@@ -96,20 +98,7 @@ public class MainActivity extends Activity {
         sizeSeekBar = (DiscreteSeekBar) findViewById(R.id.size_seekbar);
         choosePicButton = (Button) findViewById(R.id.choosePic_button);
 
-        choosePicButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //检查权限 请求权限 选图片
-//                android 6.0以上才需要?
-                requestStoragePermission();
-
-                Intent intent = new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, IMAGE);
-            }
-        });
         opacitySeekBar.setProgress(opacity);
-
         sizeSeekBar.setProgress(ballSize);
 
         if(isOpenBall) {
@@ -117,18 +106,11 @@ public class MainActivity extends Activity {
             logoImageView.getBackground().setAlpha(255);
             opacitySeekBar.setEnabled(true);
             sizeSeekBar.setEnabled(true);
-            //这样才会调用Listener接口
-//            ballSwitch.post(new Runnable() {
-//                public void run() {
-//                    ballSwitch.toggle();
-//                }
-//            });
         }else{
             logoImageView.getBackground().setAlpha(125);
             ballSwitch.setChecked(false);
             opacitySeekBar.setEnabled(false);
             sizeSeekBar.setEnabled(false);
-
         }
 
         logoImageView.setOnClickListener(new View.OnClickListener() {
@@ -137,12 +119,13 @@ public class MainActivity extends Activity {
                 ballSwitch.toggle();
             }
         });
+
         ballSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.d("lqt", "onCheckedChanged: ");
+//                Log.d("lqt", "onCheckedChanged: ");
                 if(isChecked){
-                    openFloatBall();
+                    startFloatBall();
                 }else{
                     removeFloatBall();
                 }
@@ -188,6 +171,19 @@ public class MainActivity extends Activity {
             @Override
             public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
                 ballSize = seekBar.getProgress();
+            }
+        });
+
+        choosePicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //检查权限 请求权限 选图片
+//                android 6.0以上才需要?
+                requestStoragePermission();
+
+                Intent intent = new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, IMAGE);
             }
         });
     }
@@ -247,6 +243,22 @@ public class MainActivity extends Activity {
         }
     }
 
+    private void startFloatBall() {
+        //为了可以执行返回等操作。
+        checkAccessibility();
+
+        Intent intent = new Intent(MainActivity.this, FloatBallService.class);
+        Bundle data = new Bundle();
+        data.putInt("type", FloatBallService.TYPE_ADD);
+        intent.putExtras(data);
+        startService(intent);
+
+        logoImageView.getBackground().setAlpha(255);
+        opacitySeekBar.setEnabled(true);
+        sizeSeekBar.setEnabled(true);
+        isOpenBall=true;
+    }
+
     private void removeFloatBall() {
         Intent intent = new Intent(MainActivity.this, FloatBallService.class);
         Bundle data = new Bundle();
@@ -260,19 +272,7 @@ public class MainActivity extends Activity {
         isOpenBall=false;
     }
 
-    private void openFloatBall() {
-        checkAccessibility();
-        Intent intent = new Intent(MainActivity.this, FloatBallService.class);
-        Bundle data = new Bundle();
-        data.putInt("type", FloatBallService.TYPE_ADD);
-        intent.putExtras(data);
-        startService(intent);
 
-        logoImageView.getBackground().setAlpha(255);
-        opacitySeekBar.setEnabled(true);
-        sizeSeekBar.setEnabled(true);
-        isOpenBall=true;
-    }
 
 
     @Override
@@ -285,11 +285,10 @@ public class MainActivity extends Activity {
         editor.putInt("size",ballSize);
 
         editor.apply();
-
     }
 
     private void checkAccessibility() {
-        // 判断辅助功能是否开启，看不懂
+        // 判断辅助功能是否开启
         if (!AccessibilityUtil.isAccessibilitySettingsOn(this)) {
             // 引导至辅助功能设置页面
             startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
