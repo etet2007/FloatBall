@@ -21,6 +21,12 @@ public class FloatBallService extends AccessibilityService {
     public static final int TYPE_OPACITY =2;
 
     @Override
+    protected void onServiceConnected() {
+        super.onServiceConnected();
+        FloatBallManager.addBallView(this);
+    }
+
+    @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
 
     }
