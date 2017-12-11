@@ -81,8 +81,23 @@ public class FloatBallManager {
         return mWindowManager;
     }
     public static void setOpacity(Context context,int opacity) {
-        mBallView.setOpacity(opacity);
-        mBallView.invalidate();
+        if (mBallView != null) {
+            mBallView.setOpacity(opacity);
+            mBallView.invalidate();
+        }
+    }
+    public static void setSize(Context context,int size) {
+        if (mBallView != null) {
+            mBallView.changeFloatBallSizeWithRadius(size);
+            mBallView.invalidate();
+        }
+
+    }
+    public static void setBackgroundPic(Context context,String imagePath){
+        if (mBallView != null) {
+            mBallView.makeBackgroundBitmap(imagePath);
+            mBallView.invalidate();
+        }
     }
 }
 
