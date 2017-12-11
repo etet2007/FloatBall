@@ -37,58 +37,37 @@ import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 */
 public class MainActivity extends Activity {
 
+    //控件
     private ImageView logoImageView;
     private SwitchCompat ballSwitch;
-    //透明度SeekBar
     private DiscreteSeekBar opacitySeekBar;
     private DiscreteSeekBar sizeSeekBar;
-
     private Button choosePicButton;
+
+    //显示参数
     private int opacity;
     private int ballSize;
+    private boolean isOpenBall;
 
     SharedPreferences prefs;
-    private boolean isOpenBall;
 
     //调用系统相册-选择图片
     private static final int IMAGE = 1;
+
     private final int mREQUEST_external_storage = 1;
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        //获取图片路径
-        if (requestCode == IMAGE && resultCode == Activity.RESULT_OK && data != null) {
-            Uri selectedImage = data.getData();
 
-            String[] filePathColumns = {MediaStore.Images.Media.DATA};
-            Cursor c = getContentResolver().query(selectedImage, filePathColumns, null, null, null);
-
-            c.moveToFirst();
-            int columnIndex = c.getColumnIndex(filePathColumns[0]);
-            String imagePath = c.getString(columnIndex);
-            Log.d("lqt", "onActivityResult: "+imagePath);
-            Intent intent = new Intent(MainActivity.this, FloatBallService.class);
-            Bundle bundle = new Bundle();
-            bundle.putInt("type", FloatBallService.TYPE_IMAGE);
-
-            bundle.putString("imagePath", imagePath);
-            intent.putExtras(bundle);
-            startService(intent);
-
-            c.close();
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //获取是否添加悬浮球的记录
+        //获取悬浮球参数，用于初始化悬浮球
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         isOpenBall=prefs.getBoolean("isOpenBall",false);
         opacity=prefs.getInt("opacity",125);
         ballSize=prefs.getInt("opacity",25);
+
         initView();
         //判断版本，使用Build.VERSION.SDK_INT
         //Build: Information about the current build, extracted from system properties.
@@ -110,16 +89,6 @@ public class MainActivity extends Activity {
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode==mREQUEST_external_storage){
-//判断是否成功
-//            成功继续打开图片？
-
-        }
-    }
-
     private void initView() {
         opacitySeekBar = (DiscreteSeekBar) findViewById(R.id.opacity_seekbar);
         logoImageView = (ImageView) findViewById(R.id.logo_imageview);
@@ -131,7 +100,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 //检查权限 请求权限 选图片
-//                android 6.0以上才需要吧
+//                android 6.0以上才需要?
                 requestStoragePermission();
 
                 Intent intent = new Intent(Intent.ACTION_PICK,
@@ -222,6 +191,44 @@ public class MainActivity extends Activity {
             }
         });
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //获取图片路径
+        if (requestCode == IMAGE && resultCode == Activity.RESULT_OK && data != null) {
+            Uri selectedImage = data.getData();
+
+            String[] filePathColumns = {MediaStore.Images.Media.DATA};
+            Cursor c = getContentResolver().query(selectedImage, filePathColumns, null, null, null);
+
+            c.moveToFirst();
+            int columnIndex = c.getColumnIndex(filePathColumns[0]);
+            String imagePath = c.getString(columnIndex);
+            Log.d("lqt", "onActivityResult: "+imagePath);
+            Intent intent = new Intent(MainActivity.this, FloatBallService.class);
+            Bundle bundle = new Bundle();
+            bundle.putInt("type", FloatBallService.TYPE_IMAGE);
+
+            bundle.putString("imagePath", imagePath);
+            intent.putExtras(bundle);
+            startService(intent);
+
+            c.close();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode==mREQUEST_external_storage){
+//判断是否成功
+//            成功继续打开图片？
+
+        }
+    }
+
 
     private void requestStoragePermission() {
         String[] PERMISSIONS_STORAGE = {

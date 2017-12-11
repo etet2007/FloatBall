@@ -39,7 +39,7 @@ public class FloatBallService extends AccessibilityService {
 
     //    Called by the system every time a client explicitly starts the service by calling startService(Intent),
 // providing the arguments it supplied and a unique integer token representing the start request.
-// Do not call this method directly.d
+// Do not call this method directly.
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if(intent != null) {
