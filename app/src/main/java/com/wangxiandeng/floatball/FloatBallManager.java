@@ -12,7 +12,7 @@ import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 
 /**
- * 管理WindowManager BallView的类
+ * 管理WindowManager BallView的类，使用Static的成员MyFloatBallView WindowManager
  * Created by wangxiandeng on 2016/11/25.
  */
 
@@ -81,8 +81,23 @@ public class FloatBallManager {
         return mWindowManager;
     }
     public static void setOpacity(Context context,int opacity) {
-        mBallView.setOpacity(opacity);
-        mBallView.invalidate();
+        if (mBallView != null) {
+            mBallView.setOpacity(opacity);
+            mBallView.invalidate();
+        }
+    }
+    public static void setSize(Context context,int size) {
+        if (mBallView != null) {
+            mBallView.changeFloatBallSizeWithRadius(size);
+            mBallView.invalidate();
+        }
+
+    }
+    public static void setBackgroundPic(Context context,String imagePath){
+        if (mBallView != null) {
+            mBallView.makeBackgroundBitmap(imagePath);
+            mBallView.invalidate();
+        }
     }
 }
 

@@ -11,21 +11,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.os.Build;
 import android.os.Vibrator;
 import android.support.v4.view.GestureDetectorCompat;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import java.lang.reflect.Field;
 
@@ -38,6 +34,7 @@ public class MyFloatBallView extends View {
     private final int ballMoveDistance = 18;
     private Paint mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Paint mBallPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private boolean isFirstEvent=false;
 
     public float getBallCenterY() {
         return ballCenterY;
@@ -58,20 +55,32 @@ public class MyFloatBallView extends View {
 
     private boolean isScrolling=false;
 
-    private int measuredWidth=100;
-    private int measuredHeight=100;
 
+    private float ballRadius=25;
+    private float mBackgroundRadius=ballRadius+15;
+    //View宽高
+    private int measuredWidth= (int) (mBackgroundRadius*2+20);
+    private int measuredHeight=measuredWidth;
+
+    public void changeFloatBallSizeWithRadius(int ballRadius){
+        this.ballRadius=ballRadius;
+        mBackgroundRadius=ballRadius+15;
+        //View宽高
+        measuredWidth= (int) (mBackgroundRadius*2+20);
+        measuredHeight=measuredWidth;
+        makeAnimator();
+        createBitmapCrop();
+        requestLayout();
+
+    }
     private GESTURE_STATE currentGestureSTATE;
     public enum GESTURE_STATE {
         UP, DOWN, LEFT, RIGHT,NONE
     }
 
-    private float mBackgroundRadius=40;
-    private float ballRadius=25;
-
     private boolean isLongPress=false;
-    private int mOffsetToParent;
-    private int mOffsetToParentY;
+    private float mLastTouchEventX;
+    private float mOffsetToParentY;
     private WindowManager.LayoutParams mLayoutParams;
     private int mStatusBarHeight;
 
@@ -88,8 +97,7 @@ public class MyFloatBallView extends View {
     private Vibrator mVibrator;
     private long[] mPattern = {0, 100};
 
-    Path path = new Path();
-    //    private Bitmap bitmapRead;
+    private Bitmap bitmapRead;
     private Bitmap bitmapCrop;
     public void setLayoutParams(WindowManager.LayoutParams params) {
         mLayoutParams = params;
@@ -124,7 +132,6 @@ public class MyFloatBallView extends View {
         mDetector=new GestureDetectorCompat(context,new MyGestureListener());
         mVibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
 
-
         mBackgroundPaint.setColor(Color.GRAY);
         mBackgroundPaint.setAlpha(80);
 
@@ -132,6 +139,42 @@ public class MyFloatBallView extends View {
         mBallPaint.setAlpha(150);
 
         //生成动画
+        makeAnimator();
+
+        getStatusBarHeight();
+
+        makeBackgroundBitmap(null);
+    }
+
+    public void makeBackgroundBitmap(String imagePath) {
+        if(imagePath==null){
+            Resources res=getResources();
+            bitmapRead = BitmapFactory.decodeResource(res, R.drawable.joe_big);
+        }else {
+            bitmapRead = BitmapFactory.decodeFile(imagePath);
+        }
+        createBitmapCrop();
+    }
+
+    private void createBitmapCrop() {
+        int width=(int)ballRadius*2;
+        int height=(int)ballRadius*2;
+        if(bitmapRead==null){
+            return;
+        }
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmapRead, width, height, true);
+
+        bitmapCrop = Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmapCrop);
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+//        canvas.drawCircle(width/2, height/2, ballRadius, paint);
+        canvas.drawCircle(ballRadius, ballRadius, ballRadius, paint);
+        paint.reset();
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(scaledBitmap, 0, 0, paint);
+    }
+
+    private void makeAnimator() {
         Keyframe kf0 = Keyframe.ofFloat(0f, ballRadius);
         Keyframe kf1 = Keyframe.ofFloat(.7f, ballRadius+6);
         Keyframe kf2 = Keyframe.ofFloat(1f, ballRadius+7);
@@ -158,30 +201,8 @@ public class MyFloatBallView extends View {
                 invalidate();
             }
         });
-
-        mStatusBarHeight = getStatusBarHeight();
-        mOffsetToParent = dip2px(mBackgroundRadius /2);
-        mOffsetToParentY = mStatusBarHeight + mOffsetToParent;
-
-//        mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
-        Resources res=getResources();
-        Bitmap bitmapRead = BitmapFactory.decodeResource(res, R.drawable.joe);
-
-
-        int width=(int)ballRadius*2;
-        int height=(int)ballRadius*2;
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmapRead, width, height, true);
-
-        bitmapCrop = Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmapCrop);
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        canvas.drawCircle(width/2, height/2, 25, paint);
-        paint.reset();
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(scaledBitmap, 0, 0, paint);
-
-
     }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -211,14 +232,21 @@ public class MyFloatBallView extends View {
             case MotionEvent.ACTION_MOVE:
                 //移动模式中
                 if (isLongPress){
-                    mLayoutParams.x = (int) (event.getRawX() - mOffsetToParent);
+                    //getX()、getY()返回的则是触摸点相对于View的位置。
+                    //getRawX()、getRawY()返回的是触摸点相对于屏幕的位置
+                    if(!isFirstEvent){
+                        isFirstEvent=true;
+                        mLastTouchEventX = event.getX();
+                        mOffsetToParentY = event.getY() + mStatusBarHeight;
+                    }
+                    mLayoutParams.x = (int) (event.getRawX() - mLastTouchEventX);
                     mLayoutParams.y = (int) (event.getRawY() - mOffsetToParentY);
+
                     mWindowManager.updateViewLayout(MyFloatBallView.this, mLayoutParams);
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-//                Log.d(TAG, "onTouchEvent: up");
                 //球缩小动画
                 unTouchAnimat.start();
                 if(isScrolling){
@@ -230,6 +258,7 @@ public class MyFloatBallView extends View {
                     isScrolling=false;
                 }
                 isLongPress=false;
+                isFirstEvent=false;
                 break;
         }
         return true;
@@ -354,18 +383,16 @@ public class MyFloatBallView extends View {
      * 获取通知栏高度
      * @return
      */
-    private int getStatusBarHeight() {
-        int statusBarHeight = 0;
+    private void getStatusBarHeight() {
         try {
             Class<?> c = Class.forName("com.android.internal.R$dimen");
             Object o = c.newInstance();
             Field field = c.getField("status_bar_height");
             int x = (Integer) field.get(o);
-            statusBarHeight = getResources().getDimensionPixelSize(x);
+            mStatusBarHeight = getResources().getDimensionPixelSize(x);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return statusBarHeight;
     }
 
     public int dip2px(float dip) {
