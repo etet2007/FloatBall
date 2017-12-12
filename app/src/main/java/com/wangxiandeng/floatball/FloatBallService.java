@@ -40,7 +40,7 @@ public class FloatBallService extends AccessibilityService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        FloatBallManager.saveFloatBallData();
     }
 
     //    Called by the system every time a client explicitly starts the service by calling startService(Intent),
@@ -53,20 +53,27 @@ public class FloatBallService extends AccessibilityService {
             if (data != null) {
                 int type = data.getInt("type");
                 if (type == TYPE_ADD) {
+                    //可以说在这里管理VIEW的生命周期了
                     FloatBallManager.addBallView(this);
                 }
                 if(type== TYPE_DEL){
+                    FloatBallManager.saveFloatBallData();
+
                     FloatBallManager.removeBallView(this);
+
                 }
                 if(type==TYPE_OPACITY){
                     FloatBallManager.setOpacity(this,data.getInt("opacity"));
+
                 }
                 if (type == TYPE_SIZE) {
                     FloatBallManager.setSize(this,data.getInt("size"));
+
                 }
                 if (type == TYPE_IMAGE) {
                     FloatBallManager.setBackgroundPic(this,data.getString("imagePath"));
                 }
+
             }
         }
 

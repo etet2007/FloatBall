@@ -14,8 +14,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.os.Environment;
 import android.os.Vibrator;
 import android.support.v4.view.GestureDetectorCompat;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -23,6 +25,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Field;
 
 /**
@@ -47,6 +52,7 @@ public class MyFloatBallView extends View {
     private float ballCenterX=0;
     private float ballCenterY=0;
 
+    private int mOpacity;
     public float getBallCenterX() {
         return ballCenterX;
     }
@@ -55,7 +61,6 @@ public class MyFloatBallView extends View {
     }
 
     private boolean isScrolling=false;
-
 
     private float ballRadius=25;
     private float mBackgroundRadius=ballRadius+15;
@@ -121,9 +126,15 @@ public class MyFloatBallView extends View {
     }
 
     public void setOpacity(int opacity){
+//        mOpacity=opacity;
         mBackgroundPaint.setAlpha(opacity);
         mBallPaint.setAlpha(opacity);
     }
+
+    public int getOpacity(){
+        return mBackgroundPaint.getAlpha();
+    }
+
     public MyFloatBallView(Context context) {
         super(context);
         mService = (AccessibilityService) context;
@@ -142,15 +153,38 @@ public class MyFloatBallView extends View {
 
         getStatusBarHeight();
 
-        makeBackgroundBitmap(null);
+        //生成背景图，预设值 和 读取文件值
+//        makeBackgroundBitmap(null);
+
     }
 
     public void makeBackgroundBitmap(String imagePath) {
-        if(imagePath==null){
+        if(imagePath!=null) {
+            bitmapRead = BitmapFactory.decodeFile(imagePath);
+        }
+        //读取不成功就取默认图片
+        if(bitmapRead==null){
             Resources res=getResources();
             bitmapRead = BitmapFactory.decodeResource(res, R.drawable.joe_big);
-        }else {
-            bitmapRead = BitmapFactory.decodeFile(imagePath);
+        }
+        String path = Environment.getExternalStorageDirectory().toString();
+        File file = new File(path, "ballBackground.png");
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(file);
+            boolean isSucceed=bitmapRead.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+            Log.d(TAG, "makeBackgroundBitmap: isSecceed:"+isSucceed);
+            // PNG is a lossless format, the compression factor (100) is ignored
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         createBitmapCrop();
     }
@@ -209,7 +243,7 @@ public class MyFloatBallView extends View {
         canvas.drawCircle(0, 0, mBackgroundRadius, mBackgroundPaint);
         canvas.drawCircle(ballCenterX, ballCenterY, ballRadius, mBallPaint);
 
-        canvas.drawBitmap(bitmapCrop,-bitmapCrop.getWidth()/2+ballCenterX,-bitmapCrop.getHeight()/2+ballCenterY,null);
+        canvas.drawBitmap(bitmapCrop,-bitmapCrop.getWidth()/2+ballCenterX,-bitmapCrop.getHeight()/2+ballCenterY,mBallPaint);
 
     }
 

@@ -24,6 +24,8 @@ import android.widget.Toast;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
+import static com.wangxiandeng.floatball.MyFloatBallView.TAG;
+
 /*
 
 判断版本，使用Build.VERSION.SDK_INT
@@ -67,7 +69,7 @@ public class MainActivity extends Activity {
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         isOpenBall=prefs.getBoolean("isOpenBall",false);
         opacity=prefs.getInt("opacity",125);
-        ballSize=prefs.getInt("opacity",25);
+        ballSize=prefs.getInt("size",25);
 
         initView();
 
@@ -183,7 +185,7 @@ public class MainActivity extends Activity {
 
                 Intent intent = new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, IMAGE);
+                startActivityForResult(intent, IMAGE);//onActivityResult
             }
         });
     }
@@ -203,10 +205,10 @@ public class MainActivity extends Activity {
             int columnIndex = c.getColumnIndex(filePathColumns[0]);
             String imagePath = c.getString(columnIndex);
             Log.d("lqt", "onActivityResult: "+imagePath);
+
             Intent intent = new Intent(MainActivity.this, FloatBallService.class);
             Bundle bundle = new Bundle();
             bundle.putInt("type", FloatBallService.TYPE_IMAGE);
-
             bundle.putString("imagePath", imagePath);
             intent.putExtras(bundle);
             startService(intent);
@@ -278,13 +280,6 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean("isOpenBall", isOpenBall); // value to store
-        editor.putInt("opacity",opacity);
-        editor.putInt("size",ballSize);
-
-        editor.apply();
     }
 
     private void checkAccessibility() {
