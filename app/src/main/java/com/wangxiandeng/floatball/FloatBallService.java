@@ -58,17 +58,14 @@ public class FloatBallService extends AccessibilityService {
                 }
                 if(type== TYPE_DEL){
                     FloatBallManager.saveFloatBallData();
-
                     FloatBallManager.removeBallView(this);
 
                 }
                 if(type==TYPE_OPACITY){
                     FloatBallManager.setOpacity(this,data.getInt("opacity"));
-
                 }
                 if (type == TYPE_SIZE) {
                     FloatBallManager.setSize(this,data.getInt("size"));
-
                 }
                 if (type == TYPE_IMAGE) {
                     FloatBallManager.setBackgroundPic(this,data.getString("imagePath"));
