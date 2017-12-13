@@ -28,7 +28,6 @@ public class FloatBallManager {
     private static WindowManager mWindowManager;
     private static SharedPreferences defaultSharedPreferences;
 
-
     public static void addBallView(Context context) {
         if (mBallView == null) {
             //初始化FloatBallView
@@ -47,7 +46,6 @@ public class FloatBallManager {
             params.x=defaultSharedPreferences.getInt("paramsX",screenWidth / 2);
             params.y=defaultSharedPreferences.getInt("paramsY",screenHeight / 2);
 
-
             params.width = LayoutParams.WRAP_CONTENT;
             params.height = LayoutParams.WRAP_CONTENT;
             params.gravity = Gravity.START | Gravity.TOP;
@@ -61,7 +59,11 @@ public class FloatBallManager {
             mBallView.setOpacity(defaultSharedPreferences.getInt("opacity",125));
             mBallView.changeFloatBallSizeWithRadius(defaultSharedPreferences.getInt("size",25));
 
-            String path = Environment.getExternalStorageDirectory().toString();
+            //本app内部的目录。
+            String path = context.getFilesDir().toString();
+            //外部目录 好处是用户可见，容易替代。
+//            String path = Environment.getExternalStorageDirectory().toString();
+
             mBallView.makeBackgroundBitmap(path+"/ballBackground.png");
             SharedPreferences.Editor editor = defaultSharedPreferences.edit();
             editor.putBoolean("isOpenBall",true);

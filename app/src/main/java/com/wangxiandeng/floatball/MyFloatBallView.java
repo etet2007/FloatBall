@@ -14,7 +14,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.os.Environment;
 import android.os.Vibrator;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
@@ -23,7 +22,6 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -52,7 +50,6 @@ public class MyFloatBallView extends View {
     private float ballCenterX=0;
     private float ballCenterY=0;
 
-    private int mOpacity;
     public float getBallCenterX() {
         return ballCenterX;
     }
@@ -64,6 +61,7 @@ public class MyFloatBallView extends View {
 
     private float ballRadius=25;
     private float mBackgroundRadius=ballRadius+15;
+
     //MyFloatBallView宽高
     private int measuredWidth= (int) (mBackgroundRadius*2+20);
     private int measuredHeight=measuredWidth;
@@ -90,15 +88,14 @@ public class MyFloatBallView extends View {
     private WindowManager.LayoutParams mLayoutParams;
     private int mStatusBarHeight;
 
-
     private GESTURE_STATE lastGestureSTATE = GESTURE_STATE.NONE;
 
     private GestureDetectorCompat mDetector;
     private AccessibilityService mService;
 
     private WindowManager mWindowManager;
-    private ObjectAnimator onTouchAnimat;
-    private ObjectAnimator unTouchAnimat;
+    private ObjectAnimator onTouchAnimate;
+    private ObjectAnimator unTouchAnimate;
     //Vibrator
     private Vibrator mVibrator;
     private long[] mPattern = {0, 100};
@@ -126,14 +123,13 @@ public class MyFloatBallView extends View {
     }
 
     public void setOpacity(int opacity){
-//        mOpacity=opacity;
         mBackgroundPaint.setAlpha(opacity);
         mBallPaint.setAlpha(opacity);
     }
-
     public int getOpacity(){
         return mBackgroundPaint.getAlpha();
     }
+
 
     public MyFloatBallView(Context context) {
         super(context);
@@ -167,7 +163,7 @@ public class MyFloatBallView extends View {
             Resources res=getResources();
             bitmapRead = BitmapFactory.decodeResource(res, R.drawable.joe_big);
         }
-        String path = Environment.getExternalStorageDirectory().toString();
+        String path = getContext().getFilesDir().toString();
         File file = new File(path, "ballBackground.png");
         FileOutputStream out = null;
         try {
@@ -200,7 +196,8 @@ public class MyFloatBallView extends View {
         bitmapCrop = Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmapCrop);
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-//        canvas.drawCircle(width/2, height/2, ballRadius, paint);
+
+//      免得再算一次  canvas.drawCircle(width/2, height/2, ballRadius, paint);
         canvas.drawCircle(ballRadius, ballRadius, ballRadius, paint);
         paint.reset();
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
@@ -212,9 +209,9 @@ public class MyFloatBallView extends View {
         Keyframe kf1 = Keyframe.ofFloat(.7f, ballRadius+6);
         Keyframe kf2 = Keyframe.ofFloat(1f, ballRadius+7);
         PropertyValuesHolder onTouch = PropertyValuesHolder.ofKeyframe("ballRadius", kf0,kf1,kf2);
-        onTouchAnimat = ObjectAnimator.ofPropertyValuesHolder(this, onTouch);
-        onTouchAnimat.setDuration(300);
-        onTouchAnimat.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        onTouchAnimate = ObjectAnimator.ofPropertyValuesHolder(this, onTouch);
+        onTouchAnimate.setDuration(300);
+        onTouchAnimate.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 invalidate();
@@ -225,9 +222,9 @@ public class MyFloatBallView extends View {
         Keyframe kf4 = Keyframe.ofFloat(0.3f, ballRadius+7);
         Keyframe kf5 = Keyframe.ofFloat(1f, ballRadius);
         PropertyValuesHolder unTouch = PropertyValuesHolder.ofKeyframe("ballRadius", kf3,kf4,kf5);
-        unTouchAnimat = ObjectAnimator.ofPropertyValuesHolder(this, unTouch);
-        unTouchAnimat.setDuration(400);
-        unTouchAnimat.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        unTouchAnimate = ObjectAnimator.ofPropertyValuesHolder(this, unTouch);
+        unTouchAnimate.setDuration(400);
+        unTouchAnimate.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 invalidate();
@@ -260,7 +257,7 @@ public class MyFloatBallView extends View {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 //球放大动画
-                onTouchAnimat.start();
+                onTouchAnimate.start();
             case MotionEvent.ACTION_MOVE:
                 //移动模式中
                 if (isLongPress){
@@ -280,7 +277,7 @@ public class MyFloatBallView extends View {
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
                 //球缩小动画
-                unTouchAnimat.start();
+                unTouchAnimate.start();
                 if(isScrolling){
                     doGesture();
                     //球移动动画
