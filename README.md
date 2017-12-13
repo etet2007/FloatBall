@@ -10,6 +10,4 @@
 
 （5）下拉：打开通知栏
 
-
-
-fork自HalfStackDeveloper/FloatBall，重写了整个View。
+fork自HalfStackDeveloper/FloatBall，重写了View。
