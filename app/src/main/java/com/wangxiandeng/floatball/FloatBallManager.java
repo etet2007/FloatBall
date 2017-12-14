@@ -35,6 +35,7 @@ public class FloatBallManager {
 
             WindowManager windowManager = getWindowManager(context);
 
+
             Point size = new Point();
             windowManager.getDefaultDisplay().getSize(size);
             int screenWidth = size.x;

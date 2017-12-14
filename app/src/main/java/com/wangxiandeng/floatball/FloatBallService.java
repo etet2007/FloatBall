@@ -3,14 +3,20 @@ package com.wangxiandeng.floatball;
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.ViewTreeObserver;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
+
+import static com.wangxiandeng.floatball.MyFloatBallView.TAG;
 
 
 /**
@@ -37,59 +43,34 @@ public class FloatBallService extends AccessibilityService {
         super.onServiceConnected();
         if(mFloatBallManager==null)
             mFloatBallManager = FloatBallManager.getInstance();
-
-
-        InputMethodManager im = (InputMethodManager) getSystemService(Service.INPUT_METHOD_SERVICE);
     }
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         Log.d("lqt", "onAccessibilityEvent "+event);
-        Log.d("lqt", "onAccessibilityEvent getSource "+event.getSource());
+//        Log.d("lqt", "onAccessibilityEvent getSource "+event.getSource());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
 
             if(event.getEventType()==AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED){
                 if (event.getPackageName().toString().contains("om.sohu.inputmethod.sogou")) {
-                    if(event.isFullScreen()){
-                        mFloatBallManager.setOpacity(0);
-
-                    }else {
-                        mFloatBallManager.setOpacity(255);
-
-                    }
+                    mFloatBallManager.setOpacity(0);
+                }else{
+                    mFloatBallManager.setOpacity(255);
                 }
             }
+        }
+    }
 
-            boolean isFocusedEditable = false;
-            boolean isClickEditable = false;
-
-            if(event.getEventType() == AccessibilityEvent.TYPE_VIEW_CLICKED) {
-                if(event.getSource() != null){
-                    isClickEditable = event.getSource().isEditable();
-                }
-            }else if (event.getEventType() == AccessibilityEvent.TYPE_VIEW_FOCUSED) {
-
-                if (event.getSource() != null) {
-                    isFocusedEditable = event.getSource().isEditable();
-                }
-            }
-
-            Log.d("lqt", "onAccessibilityEvent "+isClickEditable+" "+isFocusedEditable);
-            if(event.getEventType() == AccessibilityEvent.TYPE_VIEW_CLICKED||event.getEventType() ==AccessibilityEvent.TYPE_VIEW_FOCUSED)
-            if(isClickEditable || isFocusedEditable){
-                    //输入法已打开
-                mFloatBallManager.setOpacity(0);
-
-                }else {
-                    //输入法已关闭
-                mFloatBallManager.setOpacity(255);
-
-                }
+    @Override
+    protected boolean onKeyEvent(KeyEvent event) {
+        Log.d(TAG, "onKeyEvent: event.getKeyCode()"+event.getKeyCode());
+        if(event.getKeyCode()==KeyEvent.KEYCODE_BACK){
 
         }
-
+        return super.onKeyEvent(event);
     }
+
     @Override
     public void onInterrupt() {
         Log.d("lqt", "onInterrupt");
