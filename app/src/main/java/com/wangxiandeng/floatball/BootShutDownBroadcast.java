@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 /**
+ * 想开机启动，关机保存数据，没效果。
  * Created by stephenlau on 2017/12/12.
  */
 
@@ -25,7 +26,7 @@ public class BootShutDownBroadcast extends BroadcastReceiver {
         }
         if (intent.getAction().equals(ACTION_SHUTDOWN)) {
             Log.d(TAG, "ACTION_SHUTDOWN");
-            Toast.makeText(context, "ACTION_SHUTDOWN", Toast.LENGTH_LONG).show();
+//            Toast.makeText(context, "ACTION_SHUTDOWN", Toast.LENGTH_LONG).show();
 
             Intent intent2 = new Intent(context, FloatBallService.class);
             Bundle data = new Bundle();
@@ -37,16 +38,13 @@ public class BootShutDownBroadcast extends BroadcastReceiver {
 
         if (intent.getAction().equals(ACTION_BOOT)) {
             Log.d(TAG, "ACTION_BOOT");
-            Toast.makeText(context, "ACTION_BOOT", Toast.LENGTH_LONG).show();
+//            Toast.makeText(context, "ACTION_BOOT", Toast.LENGTH_LONG).show();
 
             Intent intent2 = new Intent(context, FloatBallService.class);
             Bundle data = new Bundle();
             data.putInt("type", FloatBallService.TYPE_ADD);
             intent2.putExtras(data);
             context.startService(intent2);
-
-            Intent intent3 = new Intent(context, MainActivity.class);
-            context.startActivity(intent3);
 
         }
 

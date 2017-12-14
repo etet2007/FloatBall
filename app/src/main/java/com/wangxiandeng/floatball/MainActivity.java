@@ -45,6 +45,7 @@ public class MainActivity extends Activity {
     private DiscreteSeekBar opacitySeekBar;
     private DiscreteSeekBar sizeSeekBar;
     private Button choosePicButton;
+    private SwitchCompat backgroundSwitch;
 
     //显示参数
     private int opacity;
@@ -72,7 +73,7 @@ public class MainActivity extends Activity {
         ballSize=prefs.getInt("size",25);
 
         initView();
-
+        backgroundSwitch.setChecked(prefs.getBoolean("useBackground",false));
         //判断版本，使用Build.VERSION.SDK_INT
         //Build: Information about the current build, extracted from system properties.
         //Build.VERSION: The user-visible SDK version of the framework; its possible values are defined in Build.VERSION_CODES.
@@ -99,6 +100,7 @@ public class MainActivity extends Activity {
         ballSwitch = (SwitchCompat) findViewById(R.id.start_switch);
         sizeSeekBar = (DiscreteSeekBar) findViewById(R.id.size_seekbar);
         choosePicButton = (Button) findViewById(R.id.choosePic_button);
+        backgroundSwitch = (SwitchCompat) findViewById(R.id.background_switch);
 
         opacitySeekBar.setProgress(opacity);
         sizeSeekBar.setProgress(ballSize);
@@ -108,11 +110,15 @@ public class MainActivity extends Activity {
             logoImageView.getBackground().setAlpha(255);
             opacitySeekBar.setEnabled(true);
             sizeSeekBar.setEnabled(true);
+            choosePicButton.setEnabled(true);
+            backgroundSwitch.setEnabled(true);
         }else{
             logoImageView.getBackground().setAlpha(125);
             ballSwitch.setChecked(false);
             opacitySeekBar.setEnabled(false);
             sizeSeekBar.setEnabled(false);
+            choosePicButton.setEnabled(false);
+            backgroundSwitch.setEnabled(false);
         }
 
         logoImageView.setOnClickListener(new View.OnClickListener() {
@@ -175,6 +181,18 @@ public class MainActivity extends Activity {
                 ballSize = seekBar.getProgress();
             }
         });
+        backgroundSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Intent intent = new Intent(MainActivity.this, FloatBallService.class);
+                Bundle data = new Bundle();
+                data.putInt("type", FloatBallService.TYPE_USEBACKGROUND);
+                data.putBoolean("useBackground", isChecked);
+                intent.putExtras(data);
+                startService(intent);
+            }
+        });
+
 
         choosePicButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -258,6 +276,8 @@ public class MainActivity extends Activity {
         logoImageView.getBackground().setAlpha(255);
         opacitySeekBar.setEnabled(true);
         sizeSeekBar.setEnabled(true);
+        choosePicButton.setEnabled(true);
+        backgroundSwitch.setEnabled(true);
         isOpenBall=true;
     }
 
@@ -271,6 +291,9 @@ public class MainActivity extends Activity {
         logoImageView.getBackground().setAlpha(125);
         opacitySeekBar.setEnabled(false);
         sizeSeekBar.setEnabled(false);
+        choosePicButton.setEnabled(false);
+        backgroundSwitch.setEnabled(false);
+
         isOpenBall=false;
     }
 
@@ -278,6 +301,11 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Intent intent = new Intent(MainActivity.this, FloatBallService.class);
+        Bundle data = new Bundle();
+        data.putInt("type", FloatBallService.TYPE_SAVE);
+        intent.putExtras(data);
+        startService(intent);
     }
 
     private void checkAccessibility() {

@@ -66,6 +66,19 @@
             app:dsb_max="255"
             app:dsb_value="125"
             />
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="Use background?"
+            android:layout_margin="20dp"
+            android:layout_marginBottom="20dp"
+            />
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/background_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/choosePic_button"
             android:layout_width="wrap_content"

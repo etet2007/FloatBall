@@ -1,10 +1,16 @@
 package com.wangxiandeng.floatball;
 
 import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.AccessibilityServiceInfo;
+import android.app.Service;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.RelativeLayout;
 
 
 /**
@@ -21,15 +27,67 @@ public class FloatBallService extends AccessibilityService {
     public static final int TYPE_OPACITY =2;
     public static final int TYPE_SIZE =3;
     public static final int TYPE_IMAGE =4;
+    public static final int TYPE_SAVE =5;
+    public static final int TYPE_USEBACKGROUND =6;
 
+
+    private FloatBallManager mFloatBallManager;
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
-        FloatBallManager.addBallView(this);
+        if(mFloatBallManager==null)
+            mFloatBallManager = FloatBallManager.getInstance();
+
+
+        InputMethodManager im = (InputMethodManager) getSystemService(Service.INPUT_METHOD_SERVICE);
     }
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
+        Log.d("lqt", "onAccessibilityEvent "+event);
+        Log.d("lqt", "onAccessibilityEvent getSource "+event.getSource());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+
+            if(event.getEventType()==AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED){
+                if (event.getPackageName().toString().contains("om.sohu.inputmethod.sogou")) {
+                    if(event.isFullScreen()){
+                        mFloatBallManager.setOpacity(0);
+
+                    }else {
+                        mFloatBallManager.setOpacity(255);
+
+                    }
+                }
+            }
+
+            boolean isFocusedEditable = false;
+            boolean isClickEditable = false;
+
+            if(event.getEventType() == AccessibilityEvent.TYPE_VIEW_CLICKED) {
+                if(event.getSource() != null){
+                    isClickEditable = event.getSource().isEditable();
+                }
+            }else if (event.getEventType() == AccessibilityEvent.TYPE_VIEW_FOCUSED) {
+
+                if (event.getSource() != null) {
+                    isFocusedEditable = event.getSource().isEditable();
+                }
+            }
+
+            Log.d("lqt", "onAccessibilityEvent "+isClickEditable+" "+isFocusedEditable);
+            if(event.getEventType() == AccessibilityEvent.TYPE_VIEW_CLICKED||event.getEventType() ==AccessibilityEvent.TYPE_VIEW_FOCUSED)
+            if(isClickEditable || isFocusedEditable){
+                    //输入法已打开
+                mFloatBallManager.setOpacity(0);
+
+                }else {
+                    //输入法已关闭
+                mFloatBallManager.setOpacity(255);
+
+                }
+
+        }
 
     }
     @Override
@@ -40,7 +98,7 @@ public class FloatBallService extends AccessibilityService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        FloatBallManager.saveFloatBallData();
+        mFloatBallManager.saveFloatBallData();
     }
 
     //    Called by the system every time a client explicitly starts the service by calling startService(Intent),
@@ -48,27 +106,34 @@ public class FloatBallService extends AccessibilityService {
 // Do not call this method directly.
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(intent != null) {
+
+        if(intent != null ) {            //mFloatBallManager的判断是因为生命周期有时候有问题
+            if(mFloatBallManager==null)
+                mFloatBallManager = FloatBallManager.getInstance();
+
             Bundle data = intent.getExtras();
             if (data != null) {
                 int type = data.getInt("type");
                 if (type == TYPE_ADD) {
-                    //可以说在这里管理VIEW的生命周期了
-                    FloatBallManager.addBallView(this);
+                    mFloatBallManager.addBallView(this);
                 }
                 if(type== TYPE_DEL){
-                    FloatBallManager.saveFloatBallData();
-                    FloatBallManager.removeBallView(this);
-
+                    mFloatBallManager.removeBallView(this);//内部有mFloatBallManager.saveFloatBallData();
                 }
                 if(type==TYPE_OPACITY){
-                    FloatBallManager.setOpacity(this,data.getInt("opacity"));
+                    mFloatBallManager.setOpacity(data.getInt("opacity"));
                 }
                 if (type == TYPE_SIZE) {
-                    FloatBallManager.setSize(this,data.getInt("size"));
+                    mFloatBallManager.setSize(data.getInt("size"));
                 }
                 if (type == TYPE_IMAGE) {
-                    FloatBallManager.setBackgroundPic(this,data.getString("imagePath"));
+                    mFloatBallManager.setBackgroundPic(this,data.getString("imagePath"));
+                }
+                if(type == TYPE_SAVE){
+                    mFloatBallManager.saveFloatBallData();
+                }
+                if(type==TYPE_USEBACKGROUND){
+                    mFloatBallManager.setUseBackground(data.getBoolean("useBackground"));
                 }
 
             }

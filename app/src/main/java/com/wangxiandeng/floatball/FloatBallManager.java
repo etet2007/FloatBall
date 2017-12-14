@@ -4,125 +4,146 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
-import android.os.Build;
-import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 
-import static com.wangxiandeng.floatball.MyFloatBallView.TAG;
-
 /**
- * 管理WindowManager BallView的类，使用Static的成员MyFloatBallView WindowManager
- * 应该改成单例吗？
+ * 改成了单例
  * Created by wangxiandeng on 2016/11/25.
  */
 
 public class FloatBallManager {
-    //View
-    private static MyFloatBallView mBallView;
-    //WindowManager
-    private static WindowManager mWindowManager;
-    private static SharedPreferences defaultSharedPreferences;
+    private static FloatBallManager mFloatBallManager=new FloatBallManager();
 
-    public static void addBallView(Context context) {
+    private FloatBallManager(){}
+
+    public static FloatBallManager getInstance() {
+        return mFloatBallManager;
+    }
+    //View
+    private MyFloatBallView mBallView;
+    //WindowManager
+    private WindowManager mWindowManager;
+    private SharedPreferences defaultSharedPreferences;
+    private boolean isOpenBall;
+    private boolean useBackground;
+    public void addBallView(Context context) {
         if (mBallView == null) {
-            //初始化FloatBallView
             mBallView = new MyFloatBallView(context);
-//          Get screenWidth screenHeight
+
             WindowManager windowManager = getWindowManager(context);
+
             Point size = new Point();
             windowManager.getDefaultDisplay().getSize(size);
             int screenWidth = size.x;
             int screenHeight = size.y;
 
-
             defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-            //初始化LayoutParams
+            //初始化布局参数
             LayoutParams params = new LayoutParams();
             params.x=defaultSharedPreferences.getInt("paramsX",screenWidth / 2);
             params.y=defaultSharedPreferences.getInt("paramsY",screenHeight / 2);
-
             params.width = LayoutParams.WRAP_CONTENT;
             params.height = LayoutParams.WRAP_CONTENT;
             params.gravity = Gravity.START | Gravity.TOP;
             params.type = LayoutParams.TYPE_PHONE;
             params.format = PixelFormat.RGBA_8888;
             params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL
-                    | LayoutParams.FLAG_NOT_FOCUSABLE;
+                    | LayoutParams.FLAG_NOT_FOCUSABLE|LayoutParams.FLAG_LAYOUT_IN_SCREEN|LayoutParams.FLAG_LAYOUT_INSET_DECOR; //FLAG_LAYOUT_IN_SCREEN
             mBallView.setLayoutParams(params);
+
             windowManager.addView(mBallView, params);
 
             mBallView.setOpacity(defaultSharedPreferences.getInt("opacity",125));
+
             mBallView.changeFloatBallSizeWithRadius(defaultSharedPreferences.getInt("size",25));
 
-            //本app内部的目录。
-            String path = context.getFilesDir().toString();
-            //外部目录 好处是用户可见，容易替代。
+            mBallView.makeBitmapRead();
+
+            mBallView.createBitmapCropFromBitmapRead();
+            //Call this when something has changed which has invalidated the layout of this view.
+            mBallView.requestLayout();
+
+            useBackground = defaultSharedPreferences.getBoolean("useBackground", false);
+            setUseBackground(useBackground);
+            //外部目录 好处是用户可见。
 //            String path = Environment.getExternalStorageDirectory().toString();
 
-            mBallView.makeBackgroundBitmap(path+"/ballBackground.png");
-            SharedPreferences.Editor editor = defaultSharedPreferences.edit();
-            editor.putBoolean("isOpenBall",true);
-            editor.apply();
+
+            isOpenBall=true;
         }
     }
 
-    public static void removeBallView(Context context) {
+    public void removeBallView(Context context) {
         if (mBallView != null) {
             WindowManager windowManager = getWindowManager(context);
             windowManager.removeView(mBallView);
+            isOpenBall=false;
+
+            saveFloatBallData();
             mBallView = null;
         }
     }
 
-    private static WindowManager getWindowManager(Context context) {
+    private WindowManager getWindowManager(Context context) {
         if (mWindowManager == null) {
             mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         }
         return mWindowManager;
     }
-    public static void setOpacity(Context context,int opacity) {
+    public  void setOpacity(int opacity) {
         if (mBallView != null) {
             mBallView.setOpacity(opacity);
             mBallView.invalidate();
         }
     }
-    public static void setSize(Context context,int size) {
+    public  void setSize(int size) {
         if (mBallView != null) {
             mBallView.changeFloatBallSizeWithRadius(size);
+            mBallView.createBitmapCropFromBitmapRead();
+            mBallView.requestLayout();
+
             mBallView.invalidate();
         }
 
     }
-    public static void setBackgroundPic(Context context,String imagePath){
+    public  void setBackgroundPic(Context context,String imagePath){
         if (mBallView != null) {
-            mBallView.makeBackgroundBitmap(imagePath);
+
+            mBallView.setBitmapRead(imagePath);
+            mBallView.makeBitmapRead();
+            mBallView.createBitmapCropFromBitmapRead();
             mBallView.invalidate();
         }
     }
-    public static void saveFloatBallData(){
+    public void saveFloatBallData(){
         if(defaultSharedPreferences==null || mBallView==null){
             return;
         }
 
         SharedPreferences.Editor editor = defaultSharedPreferences.edit();
 
-        //remove 才调用saveFloatBallData
-
-        editor.putBoolean("isOpenBall",false);
+        editor.putBoolean("isOpenBall",isOpenBall);
 
         LayoutParams params = mBallView.getLayoutParams();
         editor.putInt("paramsX",params.x);
         editor.putInt("paramsY",params.y);
 
-//        editor.putBoolean("isOpenBall", isOpenBall); // value to store
         editor.putInt("opacity",mBallView.getOpacity());
         editor.putInt("size", (int) mBallView.getBallRadius());
+        editor.putBoolean("useBackground", useBackground);
         editor.apply();
+    }
+
+    public void setUseBackground(boolean useBackground) {
+        if (mBallView != null) {
+            this.useBackground=useBackground;
+            mBallView.useBackground = useBackground;
+            mBallView.invalidate();
+
+        }
     }
 }
 
