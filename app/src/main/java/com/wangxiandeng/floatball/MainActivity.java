@@ -198,7 +198,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 //检查权限 请求权限 选图片
-//                android 6.0以上才需要?
+
                 requestStoragePermission();
 
                 Intent intent = new Intent(Intent.ACTION_PICK,

@@ -62,14 +62,7 @@ public class FloatBallService extends AccessibilityService {
         }
     }
 
-    @Override
-    protected boolean onKeyEvent(KeyEvent event) {
-        Log.d(TAG, "onKeyEvent: event.getKeyCode()"+event.getKeyCode());
-        if(event.getKeyCode()==KeyEvent.KEYCODE_BACK){
 
-        }
-        return super.onKeyEvent(event);
-    }
 
     @Override
     public void onInterrupt() {
@@ -88,7 +81,8 @@ public class FloatBallService extends AccessibilityService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if(intent != null ) {            //mFloatBallManager的判断是因为生命周期有时候有问题
+        if(intent != null ) {
+            //mFloatBallManager的判断是因为生命周期有时候有问题
             if(mFloatBallManager==null)
                 mFloatBallManager = FloatBallManager.getInstance();
 
