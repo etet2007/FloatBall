@@ -1,6 +1,8 @@
 package com.wangxiandeng.floatball;
 
 import android.accessibilityservice.AccessibilityService;
+import android.animation.Animator;
+import android.animation.AnimatorSet;
 import android.animation.Keyframe;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
@@ -17,7 +19,6 @@ import android.graphics.PorterDuffXfermode;
 import android.os.Vibrator;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -69,13 +70,12 @@ public class MyFloatBallView extends View {
 
     public void changeFloatBallSizeWithRadius(int ballRadius){
         this.ballRadius=ballRadius;
-        mBackgroundRadius=ballRadius+15;
+        this.mBackgroundRadius=ballRadius+15;
         //View宽高
         measuredWidth= (int) (mBackgroundRadius*2+20);
         measuredHeight=measuredWidth;
-        //大小变了，动画的参数也需要改变。
-        makeAnimator();
 
+        refreshTouchAnimator();        //大小变了，动画的参数也需要改变。
     }
     private GESTURE_STATE currentGestureSTATE;
 
@@ -97,6 +97,9 @@ public class MyFloatBallView extends View {
     private WindowManager mWindowManager;
     private ObjectAnimator onTouchAnimate;
     private ObjectAnimator unTouchAnimate;
+    private ObjectAnimator onAddAnimate;
+    private ObjectAnimator onRemoveAnimate;
+
     //Vibrator
     private Vibrator mVibrator;
     private long[] mPattern = {0, 100};
@@ -116,10 +119,10 @@ public class MyFloatBallView extends View {
     public void setBallRadius(float ballRadius) {
         this.ballRadius = ballRadius;
     }
-    public float getmBackgroundRadius() {
+    public float getMBackgroundRadius() {
         return mBackgroundRadius;
     }
-    public void setmBackgroundRadius(float mBackgroundRadius) {
+    public void setMBackgroundRadius(float mBackgroundRadius) {
         this.mBackgroundRadius = mBackgroundRadius;
     }
 
@@ -146,11 +149,10 @@ public class MyFloatBallView extends View {
         mBallPaint.setAlpha(150);
 
         //生成动画，多余。
-        makeAnimator();
+        refreshTouchAnimator();
 
         //生成BitmapRead
         makeBitmapRead();
-
     }
 
 
@@ -203,7 +205,7 @@ public class MyFloatBallView extends View {
 
 
     public void createBitmapCropFromBitmapRead() {
-        if(bitmapRead==null){
+        if(bitmapRead==null||ballRadius<=0){
             return;
         }
 
@@ -223,7 +225,8 @@ public class MyFloatBallView extends View {
         canvas.drawBitmap(scaledBitmap, 0, 0, paint);
     }
 
-    private void makeAnimator() {
+    public void refreshTouchAnimator() {
+
         Keyframe kf0 = Keyframe.ofFloat(0f, ballRadius);
         Keyframe kf1 = Keyframe.ofFloat(.7f, ballRadius+6);
         Keyframe kf2 = Keyframe.ofFloat(1f, ballRadius+7);
@@ -251,6 +254,104 @@ public class MyFloatBallView extends View {
         });
     }
 
+    public void refreshAddAnimator() {
+        Keyframe kf0 = Keyframe.ofFloat(0f, 0);
+        Keyframe kf1 = Keyframe.ofFloat(1f, ballRadius);
+        PropertyValuesHolder ballRadiusValuesHolder = PropertyValuesHolder.ofKeyframe("ballRadius", kf0,kf1);
+        Keyframe kf2 = Keyframe.ofFloat(0f, 0);
+        Keyframe kf3 = Keyframe.ofFloat(1f, ballRadius+15);
+        PropertyValuesHolder backgroundRadiusValuesHolder = PropertyValuesHolder.ofKeyframe("mBackgroundRadius", kf2,kf3);
+
+        onAddAnimate = ObjectAnimator.ofPropertyValuesHolder(this, ballRadiusValuesHolder,backgroundRadiusValuesHolder);
+        onAddAnimate.setDuration(400);
+        onAddAnimate.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                invalidate();
+            }});
+        onAddAnimate.start();
+
+//        另外一种动画，感觉不好
+//        ValueAnimator.AnimatorUpdateListener update=new ValueAnimator.AnimatorUpdateListener() {
+//                        @Override
+//            public void onAnimationUpdate(ValueAnimator animation) {
+//                invalidate();
+//            }
+//        };
+//        ObjectAnimator animator1=ObjectAnimator.ofFloat(this, "ballRadius", 0F,ballRadius);
+//        ObjectAnimator animator2=ObjectAnimator.ofFloat(this, "mBackgroundRadius", ballRadius,ballRadius+15);
+//        mBackgroundRadius=0;
+//        animator1.addUpdateListener(update);
+//        animator1.setDuration(300);
+//        animator2.setDuration(100);
+//        animator2.addUpdateListener(update);
+//        AnimatorSet set = new AnimatorSet();
+//        set.play(animator2).after(animator1);
+//        set.start();
+//        set.addListener(new Animator.AnimatorListener() {
+//            @Override
+//            public void onAnimationStart(Animator animation) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationCancel(Animator animation) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationRepeat(Animator animation) {
+//
+//            }
+//        });
+
+    }
+
+    public void refreshRemoveAnimator() {
+        Keyframe kf0 = Keyframe.ofFloat(0f, ballRadius);
+        Keyframe kf1 = Keyframe.ofFloat(1f, 0);
+        PropertyValuesHolder ballRadiusValuesHolder = PropertyValuesHolder.ofKeyframe("ballRadius", kf0,kf1);
+        Keyframe kf2 = Keyframe.ofFloat(0f, mBackgroundRadius);
+        Keyframe kf3 = Keyframe.ofFloat(1f, 0);
+        PropertyValuesHolder backgroundRadiusValuesHolder = PropertyValuesHolder.ofKeyframe("mBackgroundRadius", kf2,kf3);
+
+
+        onRemoveAnimate = ObjectAnimator.ofPropertyValuesHolder(this, ballRadiusValuesHolder,backgroundRadiusValuesHolder);
+        onRemoveAnimate.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+                windowManager.removeView(MyFloatBallView.this);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        onRemoveAnimate.setDuration(400);
+        onRemoveAnimate.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                invalidate();
+            }
+        });
+        onRemoveAnimate.start();
+    }
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);

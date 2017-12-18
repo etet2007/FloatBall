@@ -66,12 +66,13 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //获取悬浮球参数，用于初始化悬浮球
+        //获取悬浮球参数
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         isOpenBall=prefs.getBoolean("isOpenBall",false);
         opacity=prefs.getInt("opacity",125);
         ballSize=prefs.getInt("size",25);
 
+        //Set up
         initView();
         backgroundSwitch.setChecked(prefs.getBoolean("useBackground",false));
         //判断版本，使用Build.VERSION.SDK_INT

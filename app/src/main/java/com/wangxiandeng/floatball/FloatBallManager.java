@@ -72,15 +72,16 @@ public class FloatBallManager {
             //外部目录 好处是用户可见。
 //            String path = Environment.getExternalStorageDirectory().toString();
 
+            mBallView.refreshAddAnimator();
+
 
             isOpenBall=true;
         }
     }
 
-    public void removeBallView(Context context) {
+    public void removeBallView(final Context context) {
         if (mBallView != null) {
-            WindowManager windowManager = getWindowManager(context);
-            windowManager.removeView(mBallView);
+            mBallView.refreshRemoveAnimator();
             isOpenBall=false;
 
             saveFloatBallData();
@@ -103,6 +104,7 @@ public class FloatBallManager {
     public  void setSize(int size) {
         if (mBallView != null) {
             mBallView.changeFloatBallSizeWithRadius(size);
+
             mBallView.createBitmapCropFromBitmapRead();
             mBallView.requestLayout();
 
