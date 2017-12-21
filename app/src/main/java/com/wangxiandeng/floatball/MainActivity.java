@@ -14,7 +14,10 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -37,7 +40,7 @@ import static com.wangxiandeng.floatball.MyFloatBallView.TAG;
 辅助功能
 
 */
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
     //控件
     private ImageView logoImageView;
@@ -73,6 +76,15 @@ public class MainActivity extends Activity {
         ballSize=prefs.getInt("size",25);
 
         //Set up
+        // Set up the toolbar. 工具栏。
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);//AppCompatActivity自带方法
+        ActionBar ab = getSupportActionBar();//上面Set完这里Get，不就是Toolbar
+        ab.setHomeAsUpIndicator(R.drawable.ic_menu);
+        ab.setDisplayHomeAsUpEnabled(true);
+
+
+
         initView();
         backgroundSwitch.setChecked(prefs.getBoolean("useBackground",false));
         //判断版本，使用Build.VERSION.SDK_INT

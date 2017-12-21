@@ -3,173 +3,173 @@
 
     <item
         is-multidex="false"
-        jar="/home/stephenlau/SoftwareFolder/Android/extras/android/m2repository/com/android/support/support-annotations/24.2.1/support-annotations-24.2.1.jar"
+        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/cardview-v7-26.1.0.aar/4083d990939f915f10eae1e8517b4660/jars/classes.jar"
         jumboMode="false"
         min-sdk-version="16"
         optimize="true"
         revision="26.0.2"
-        sha1="8de3aafecbdf98a61db6427f008f2d515bcd2544">
-        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/17.jar" />
+        sha1="b4d6fbbb48b42dd03fd9c5a09b3b7a53266df6ed">
+        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/3.jar" />
     </item>
     <item
         is-multidex="false"
-        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/support-core-ui-24.2.1.aar/30067a6584a9ba97e01b3226f0f8bcb1/jars/classes.jar"
+        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/support-fragment-26.1.0.aar/c57094d8a468ab121210928a4e6e8092/jars/classes.jar"
         jumboMode="false"
         min-sdk-version="16"
         optimize="true"
         revision="26.0.2"
-        sha1="e7f3132168957eefc46229fc32c3bd464642b71e">
-        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/13.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/support-fragment-24.2.1.aar/ccf6f9ac8ef08d744886c704bd43408c/jars/classes.jar"
-        jumboMode="false"
-        min-sdk-version="16"
-        optimize="true"
-        revision="26.0.2"
-        sha1="b9a1ac78ad7ef3abedc4a4b30cd92bcacb939d1f">
-        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/7.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-24.2.1.aar/b282e6e8d9fd84a977129dc2bb4bba9d/jars/classes.jar"
-        jumboMode="false"
-        min-sdk-version="16"
-        optimize="true"
-        revision="26.0.2"
-        sha1="94bc1dfb84dcc8b6f6f8f7cc726d7b2dd39c1574">
-        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/5.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/support-media-compat-24.2.1.aar/fb897b50866f62e443e255dbeef6a373/jars/classes.jar"
-        jumboMode="false"
-        min-sdk-version="16"
-        optimize="true"
-        revision="26.0.2"
-        sha1="09b462bbcb77650284bd6614f1a32f360ef369f8">
-        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/9.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/support-media-compat-24.2.1.aar/fb897b50866f62e443e255dbeef6a373/jars/libs/internal_impl-24.2.1.jar"
-        jumboMode="false"
-        min-sdk-version="16"
-        optimize="true"
-        revision="26.0.2"
-        sha1="fbf8da429efd5ad21e02e3e5ecaa1efc4167878d">
-        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/10.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/support-core-ui-24.2.1.aar/30067a6584a9ba97e01b3226f0f8bcb1/jars/libs/internal_impl-24.2.1.jar"
-        jumboMode="false"
-        min-sdk-version="16"
-        optimize="true"
-        revision="26.0.2"
-        sha1="867dad63c33388ff8c7644b236579355036d075f">
-        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/14.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-24.2.1.aar/a7283cd18ed1ae8f87a3f9c7e2932040/jars/classes.jar"
-        jumboMode="false"
-        min-sdk-version="16"
-        optimize="true"
-        revision="26.0.2"
-        sha1="d5c731fc64c03dfe04d51134955b483551c35849">
-        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/6.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/support-compat-24.2.1.aar/431f86b36717b2e786af12e818a8a8db/jars/classes.jar"
-        jumboMode="false"
-        min-sdk-version="16"
-        optimize="true"
-        revision="26.0.2"
-        sha1="0ecb4b595fa0f0f8018a149ace3ea6525624f94e">
-        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/15.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/support-core-utils-24.2.1.aar/337a0aa1cfdfb23a9c5f28de56c394c1/jars/classes.jar"
-        jumboMode="false"
-        min-sdk-version="16"
-        optimize="true"
-        revision="26.0.2"
-        sha1="9c4c3bc902450c39ed54de170db4fb12aea20a35">
+        sha1="7efef32744ca4a436492d5cf28c08698cc2af256">
         <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/11.jar" />
     </item>
     <item
         is-multidex="false"
-        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/discrete-seekbar-1.0.1.aar/6d418cc834e5db87cd281c28034c165a/jars/classes.jar"
+        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/support-core-ui-26.1.0.aar/29c2cfecb422a5bf4a11a30375af91ab/jars/classes.jar"
         jumboMode="false"
         min-sdk-version="16"
         optimize="true"
         revision="26.0.2"
-        sha1="7be042dd2aa8157a2b63934902f472952d2ea1fe">
-        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/2.jar" />
+        sha1="508f50705b4fde51a16259f29c854201a3044516">
+        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/12.jar" />
     </item>
     <item
         is-multidex="false"
-        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/support-v4-24.2.1.aar/63c6475022e66a6d8275340f42d86526/jars/classes.jar"
+        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/transition-26.1.0.aar/43ade596189943e46243b0ca1b960abf/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="16"
+        optimize="true"
+        revision="26.0.2"
+        sha1="58b12bdb21a84f22e0dc3b047aeceb0a546b1b44">
+        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/6.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/recyclerview-v7-26.1.0.aar/efafb53fad37ffb782e8dbb7ab0180dc/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="16"
+        optimize="true"
+        revision="26.0.2"
+        sha1="b12cd9c87c3dfb012a911b6e38d2444ed0a65e1f">
+        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/4.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/design-26.1.0.aar/df14ff288e74d81d51ad43f9aa6350bb/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="16"
+        optimize="true"
+        revision="26.0.2"
+        sha1="a37fc31c5ceeaa4532a37358add1b189d8db4af1">
+        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/1.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-26.1.0.aar/f76b7f8ca9522dc661d50eb140ef7ee1/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="16"
+        optimize="true"
+        revision="26.0.2"
+        sha1="40392f30a601db5675cdf18192aab013d6fee6ec">
+        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/9.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/stephenlau/.gradle/caches/modules-2/files-2.1/com.android.support/support-annotations/26.1.0/814258103cf26a15fcc26ecce35f5b7d24b73f8/support-annotations-26.1.0.jar"
+        jumboMode="false"
+        min-sdk-version="16"
+        optimize="true"
+        revision="26.0.2"
+        sha1="0814258103cf26a15fcc26ecce35f5b7d24b73f8">
+        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/16.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/runtime-1.0.0.aar/32567243814f5f6647bc483568ba7c58/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="16"
+        optimize="true"
+        revision="26.0.2"
+        sha1="b62fdc4cfef174c1e456014195c83fa7de7dc041">
+        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/17.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/support-v4-26.1.0.aar/39889c407c234edffb13fd94a44e360b/jars/classes.jar"
         jumboMode="false"
         min-sdk-version="16"
         optimize="true"
         revision="26.0.2"
         sha1="d7c42c80f6509b9ea4db28ca7859ffae08ec5741">
-        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/4.jar" />
+        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/7.jar" />
     </item>
     <item
         is-multidex="false"
-        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/support-compat-24.2.1.aar/431f86b36717b2e786af12e818a8a8db/jars/libs/internal_impl-24.2.1.jar"
+        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/support-media-compat-26.1.0.aar/9e6ae1b7e5bd981439373290eaf4b849/jars/classes.jar"
         jumboMode="false"
         min-sdk-version="16"
         optimize="true"
         revision="26.0.2"
-        sha1="7e4389bd133359a2ff88623ff1e4ff93d6e6f780">
-        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/16.jar" />
+        sha1="f97cf85b0fe70d37a705111dafa6b1b418ea1650">
+        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/13.jar" />
     </item>
     <item
         is-multidex="false"
-        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/support-core-utils-24.2.1.aar/337a0aa1cfdfb23a9c5f28de56c394c1/jars/libs/internal_impl-24.2.1.jar"
+        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/support-compat-26.1.0.aar/f3ef1bbe2f8d1f048b1f4bd8c20c48bd/jars/classes.jar"
         jumboMode="false"
         min-sdk-version="16"
         optimize="true"
         revision="26.0.2"
-        sha1="935a969265b2a166b2d20415423f5f6e90fe16e0">
-        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/12.jar" />
+        sha1="2442771a5590dd4eb4bce00c2e9dca9e22e4c963">
+        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/15.jar" />
     </item>
     <item
         is-multidex="false"
-        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/MaterialAnimatedSwitch-1.1.aar/4f4c36a255786a046d436207895c820a/jars/classes.jar"
+        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-26.1.0.aar/88467d31b51776481a0f784686fbfbe9/jars/classes.jar"
         jumboMode="false"
         min-sdk-version="16"
         optimize="true"
         revision="26.0.2"
-        sha1="852f2169586d14bd236870f62d54d5063f2124c8">
-        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/3.jar" />
+        sha1="6f4138a4e065826cb044d49faea4cfd7191773d1">
+        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/10.jar" />
     </item>
     <item
         is-multidex="false"
-        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/appcompat-v7-24.2.1.aar/e27a443732a5c4bec4897d84243293bf/jars/classes.jar"
+        jar="/home/stephenlau/.gradle/caches/modules-2/files-2.1/android.arch.core/common/1.0.0/a2d487452376193fc8c103dd2b9bd5f2b1b44563/common-1.0.0.jar"
         jumboMode="false"
         min-sdk-version="16"
         optimize="true"
         revision="26.0.2"
-        sha1="43b2dba6b5a0b14527961b75329d0b90025f15ea">
-        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/1.jar" />
+        sha1="a2d487452376193fc8c103dd2b9bd5f2b1b44563">
+        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/19.jar" />
     </item>
     <item
         is-multidex="false"
-        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/support-fragment-24.2.1.aar/ccf6f9ac8ef08d744886c704bd43408c/jars/libs/internal_impl-24.2.1.jar"
+        jar="/home/stephenlau/.gradle/caches/modules-2/files-2.1/android.arch.lifecycle/common/1.0.0/e414a4cb28434e25c4f6aa71426eb20cf4874ae9/common-1.0.0.jar"
         jumboMode="false"
         min-sdk-version="16"
         optimize="true"
         revision="26.0.2"
-        sha1="5f64d657e838e8375135c0f6057a7ff8fab6a50e">
-        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/8.jar" />
+        sha1="e414a4cb28434e25c4f6aa71426eb20cf4874ae9">
+        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/18.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/support-core-utils-26.1.0.aar/79ab8328dbb93d38a42e438a9d4b5b06/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="16"
+        optimize="true"
+        revision="26.0.2"
+        sha1="233f60a165ae622c8b36731502ebbda0f65e1930">
+        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/14.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/stephenlau/.gradle/caches/transforms-1/files-1.1/appcompat-v7-26.1.0.aar/ddf516e5c0eaed6b398201ba5357249c/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="16"
+        optimize="true"
+        revision="26.0.2"
+        sha1="f428e2fbc9ed0b297e3a3f420e51e6982f66822d">
+        <dex dex="/home/stephenlau/Programme/Workspcae/AndroidStudioWorkspace/FloatBall/app/build/intermediates/transforms/preDex/release/2.jar" />
     </item>
 
 </items>

@@ -226,7 +226,6 @@ public class MyFloatBallView extends View {
     }
 
     public void refreshTouchAnimator() {
-
         Keyframe kf0 = Keyframe.ofFloat(0f, ballRadius);
         Keyframe kf1 = Keyframe.ofFloat(.7f, ballRadius+6);
         Keyframe kf2 = Keyframe.ofFloat(1f, ballRadius+7);
@@ -352,6 +351,7 @@ public class MyFloatBallView extends View {
         });
         onRemoveAnimate.start();
     }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);

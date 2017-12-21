@@ -6,7 +6,7 @@
     <color name="colorPress">#505050</color>
     <color name="colorRelease">#ffffff</color>
 
-    <color name="my_awesome_color" >#3F51B5</color>
-    <color name="my_awesome_darker_color" >#000000</color>
-    <color name="accent" >#006bd6</color>
+    <color name="my_awesome_color" >#33528c</color>
+    <color name="my_awesome_darker_color" >#313131</color>
+    <color name="my_awesome_accent" >#2a84c7</color>
 </resources>

@@ -8,8 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="Theme.MyActivityTheme" parent="Theme.AppCompat.Light">
-
+    <style name="Theme.MyActivityTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- colorPrimary is used for the default action bar background -->
         <item name="colorPrimary">@color/my_awesome_color</item>
 
@@ -18,11 +17,13 @@
 
         <!-- colorAccent is used as the default value for colorControlActivated,
              which is used to tint widgets -->
-        <item name="colorAccent">@color/accent</item>
-
+        <item name="colorAccent">@color/my_awesome_accent</item>
         <!-- You can also set colorControlNormal, colorControlActivated
              colorControlHighlight, and colorSwitchThumbNormal. -->
 
+    </style>
+
+    <style name="Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar" >
     </style>
 
 
